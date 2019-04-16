@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div>
+    <form id="video-upload", method="POST">
+        <input name="url" type="text" placeholder="Enter video URL...">
+        <button id="video-submit" type="submit">UPLOAD</button>
+        <div id="form-response"></div>
+    </form>
+    <iframe hidden id="video-preview">
+    </iframe>
+</div>
+{% endblock %}
