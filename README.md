@@ -4,26 +4,15 @@
 
     navigate to project folder, then:
 
-    * Linux:
-    ```
-    python3 -m venv venv
-    ```
-    * Windows:
-    py -3 -m venv venv
+    * Linux:  `python3 -m venv venv`
+    * Windows:  `py -3 -m venv venv`
 
 2. Activate environment: (every time)
 
     from your working terminal:
 
-    * Linux:
-    ```
-    . venv/bin/activate
-    ```
-
-    * Windows:
-    ```
-    venv\Scripts\activate
-    ```
+    * Linux:  `. venv/bin/activate`
+    * Windows:  `venv\Scripts\activate`
 
 3. Instal dependencies: (every pull)
 
