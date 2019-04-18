@@ -29,7 +29,7 @@ frame=img
 # The order of the colors is blue, green, red
 lower_color_bounds = (40, 0, 0)
 upper_color_bounds = (225,90,90)
-print ('Press <q> to quit')
+# print ('Press <q> to quit')
 # while(cap.isOpened()):
 #  ret,frame = cap.read()
 gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
