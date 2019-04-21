@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Good Times';
+  src: url('fonts/good-times-rg.woff') format('woff'), /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+   url('fonts/good-times-rg.ttf') format('truetype'); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}  
+
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   box-sizing: border-box;
@@ -8,6 +14,9 @@ body {
 .navbar {
   justify-content: space-between !important;
   margin-bottom: 20px;
+}
+.navbar-brand {
+  font-family: 'Good Times';
 }
 .nav-item {
   text-align: center;
@@ -25,3 +34,7 @@ body {
   }
 }
 /** END HEADER **/
+#video-preview {
+  border: 0;
+}
+/** BEGIN MAIN **/

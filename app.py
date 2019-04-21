@@ -22,10 +22,10 @@ def home():
     else:
         try:
             url = request.form.get('url')
-            path = downloadFromYoutube(url)
-            return json_response(path = path)
+            title, path = downloadFromYoutube(url)
+            return json_response(path = path, title=title)
         except:
-            return json_response(status_=404)
+            return json_response(status_=404,data_={'message': 'Failed to get video'})
 
 
 @app.route('/login')
@@ -43,5 +43,6 @@ def previewVideo(url):
 
 def downloadFromYoutube(url):
     yt = YouTube(url)
+    title = yt.title
     yt.streams.first().download(output_path='videos/temp' ,filename="video1")
-    return '/videos/temp/video1.mp4'
+    return title, '/videos/temp/video1.mp4'
