@@ -8,27 +8,27 @@ def apply_color_overlay(image,mask, intensity = 0.5,blue = 0, green = 0, red = 0
 
     # creating matrix of same img dimensions and filling it with required color divided by 255
     color_bgra = (blue / 255, green / 255, red / 255)
-    overlay = np.full((image_h,image_w,3),color_bgra, dtype= 'float_')
+    overlay = np.full((image_h, image_w, 3), color_bgra, dtype='float_')
 
     # converting the mask to desired color, and adding alpha channel initialized by ones
     tempMask = overlay*mask
-    tempOnes = np.ones((image_h,image_w,1))
-    temp=np.concatenate((tempMask,tempOnes), axis=2)
+    tempOnes = np.ones((image_h, image_w, 1))
+    temp = np.concatenate((tempMask, tempOnes), axis=2)
 
     # overlaying the mask on the image
-    cv2.addWeighted(np.uint8(temp),intensity,image,1.0,0,image)
+    cv2.addWeighted(np.uint8(temp), intensity, image, 1.0, 0, image)
     image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
 
     return image
 
 
-def removePitch(frame, lower_pitch_color, higher_pitch_color):
+def removeBackGround(frame, lower_color, higher_color):
     count = 0
     idx = 0
     hsvFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # extracting only the pitch
-    mask = cv2.inRange(hsvFrame, lower_pitch_color, higher_pitch_color)
+    mask = cv2.inRange(hsvFrame, lower_color, higher_color)
     maskedFrame = cv2.bitwise_and(hsvFrame, hsvFrame, mask=mask)
 
     # convert hsv to gray for thresholding
@@ -43,31 +43,45 @@ def removePitch(frame, lower_pitch_color, higher_pitch_color):
     return cv2.bitwise_and(frame, frame, mask=thresholdedMask)
 
 
-def find_histogram(clt):
-    # creating array with cluster numbers
-    numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
-    # Finding Histogram
-    (hist, _) = np.histogram(clt.labels_, bins=numLabels)
+def imgHistogram (image, mask=None, maskFlag = 0, channelNo = 0):
+    imageHSV = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
-    # Normalizing Histogram from 0 to 1
-    hist = hist.astype("float")
-    hist /= hist.sum()
+    # if mask flag=1 and mask is none, the histogram will be for all the image
+    # if flag=0, mask attribute will be the only parts of the image represented in the histogram
+    if maskFlag != 1:
+        mask = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
+        thresholdedMask = cv2.threshold(mask, 0, 255, cv2.THRESH_BINARY)[1]
+    else:
+        thresholdedMask = mask
 
+    # hist will be list of 255 elements, each carrying the no of pixels carrying this attribute
+    # (H for example if cahnnelNo is 0)
+    hist = cv2.calcHist([imageHSV], [channelNo], thresholdedMask, [256], [0, 256])
     return hist
 
 
-def plot_colors2(hist, centroids):
-    bar = np.zeros((50, 300, 3), dtype="uint8")
-    startX = 0
+def maxRangeFromHisto (hist, maxIndex, percentageFromAverage):
+    # starting at the maxIndex, and getting the range in the histogram
+    # where the Y axis value is more than (curve average / percentageFromAverage)
+    endIndex = maxIndex
+    startIndex = maxIndex
+    Range = sum(hist) / (len(hist) * percentageFromAverage)
 
-    for (percent, color) in zip(hist, centroids):
-        # plot the relative percentage of each cluster
-        endX = startX + (percent * 300)
-        cv2.rectangle(bar, (int(startX), 0), (int(endX), 50),
-                      color.astype("uint8").tolist(), -1)
-        startX = endX
+    while True:
+        endIndex = (endIndex + 1) % 256
+        if endIndex == maxIndex:
+            break
+        if hist[endIndex] < Range:
+            endIndex = (endIndex - 1) % 256
+            break
 
-    # return the bar chart
-    return bar
+    while True:
+        startIndex = (startIndex - 1) % 256
+        if startIndex == maxIndex:
+            break
+        if hist[startIndex] < Range:
+            startIndex = (startIndex + 1) % 256
+            break
 
+    return startIndex, endIndex
 
