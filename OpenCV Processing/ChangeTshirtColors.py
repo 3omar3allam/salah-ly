@@ -32,7 +32,7 @@ def ChangeTshirtColors (img, lower_color_bounds, upper_color_bounds, transferCol
 
 def main():
 
-    img = cv2.imread('IPTest.jpg')
+    img = cv2.imread('IPTest2.jpg')
     # red
     lower_color_bounds = (0,120,70)
     upper_color_bounds = (16,255,255)
@@ -42,7 +42,9 @@ def main():
     # green
     # lower_color_bounds = (35, 50, 40 )
     # upper_color_bounds = (55, 255, 255)
-    ChangeTshirtColors(img, lower_color_bounds, upper_color_bounds, (100, 0, 0)) # (100,0,0) is the value added to the red pixels
+    recoloredFrame = ChangeTshirtColors(img, lower_color_bounds, upper_color_bounds, (100, 0, 0)) # (100,0,0) is the value added to the red pixels
+    cv2.imshow("recolored frame", recoloredFrame)
+    cv2.waitKey()
 
 
     # testing change color after extracting colors from the image

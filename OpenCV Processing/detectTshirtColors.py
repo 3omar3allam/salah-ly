@@ -80,7 +80,7 @@ def extractShirtsColors (img):
 
 
 def main():
-    img = cv2.imread('IPTest.jpg')
+    img = cv2.imread('IPTest2.jpg')
     l1, u1, l2, u2 = extractShirtsColors(img)
     print(l1, u1, l2, u2)
 

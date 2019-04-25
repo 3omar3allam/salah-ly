@@ -23,8 +23,6 @@ def apply_color_overlay(image,mask, intensity = 0.5,blue = 0, green = 0, red = 0
 
 
 def removeBackGround(frame, lower_color, higher_color):
-    count = 0
-    idx = 0
     hsvFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # extracting only the pitch
@@ -37,10 +35,13 @@ def removeBackGround(frame, lower_color, higher_color):
 
     # Performing closing to remove noise
     kernel = np.ones((10, 10), np.uint8)
-    thresholdedMask = cv2.threshold(maskedFrame_gray, 0, 255, cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
+    thresholdedMask = cv2.threshold(maskedFrame_gray, 0, 255, cv2.THRESH_BINARY)[1]
     thresholdedMask = cv2.morphologyEx(thresholdedMask, cv2.MORPH_CLOSE, kernel)
 
-    return cv2.bitwise_and(frame, frame, mask=thresholdedMask)
+    # subtracting to get only the players without the background
+    removedBackground = frame-cv2.bitwise_and(frame, frame, mask=thresholdedMask)
+
+    return removedBackground
 
 
 def imgHistogram (image, mask=None, maskFlag = 0, channelNo = 0):
