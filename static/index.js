@@ -52,3 +52,21 @@ $(document).ready(function() {
     e.preventDefault();
   });
 });
+
+jQuery(function() {
+	$('#example2').loads({
+		layout: 'hex',
+		flat: false,
+		enableAlpha: false,
+		color: '208EB3',
+		onSubmit: function(ev) {
+			$(ev.el).css('border-color', '#' + ev.hex);
+			$(ev.el).val("#" + ev.hex);
+			$(ev.el).hides();
+		},
+		onHide: function(ev) {
+			var color = $(ev.el).getColor("hex", true);
+			$(ev.el).setColor(color, false);
+		}
+	});
+});

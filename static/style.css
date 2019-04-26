@@ -34,7 +34,20 @@ body {
   }
 }
 /** END HEADER **/
+
+
+/** BEGIN MAIN **/
 #video-preview {
   border: 0;
 }
-/** BEGIN MAIN **/
+
+#example2 {
+	width: 100px;
+	height: 30px;
+	line-height: 34px;
+	border-width: 2px;
+	border-left-width: 34px;
+	border-style: solid;
+	border-color: #208EB3;
+	text-transform: uppercase;
+}
