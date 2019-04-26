@@ -20,7 +20,7 @@ function uploadSuccess(response) {
   $("#originalVideoTitle").html(response.title);
   $("#color-choose").show();
   $("html, body").animate({
-    scrollTop: $("#video-container").offset().top
+    scrollTop: $("#video-container").offset().top - 56
   });
   $("#video-submit").prop("disabled", "disabled");
 }
@@ -77,7 +77,7 @@ $(document).ready(function() {
           }
           uploadError(message);
         },
-        timeout: 20000
+        timeout: 30000
       });
     } catch (e) {}
   });
