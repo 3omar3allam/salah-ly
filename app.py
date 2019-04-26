@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, jsonify, send_file
+from flask import Flask, render_template, redirect, request, jsonify, send_file, send_from_directory
 from flask_json import FlaskJSON, json_response
 from pymongo import MongoClient
 
@@ -40,6 +40,11 @@ def previewVideo(url):
     except FileNotFoundError:
         return json_response(status_=404)
 
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static', 'icon'),
+                               'favicon.ico', mimetype='image/png')
 
 def downloadFromYoutube(url):
     os.makedirs('videos/temp',exist_ok=True)
