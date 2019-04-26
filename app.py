@@ -7,7 +7,7 @@ load_dotenv(override=True)
 import os
 
 import cv2
-from pytube import YouTube
+from custom_packages.pytube import YouTube
 
 app = Flask(__name__)
 FlaskJSON(app)
