@@ -1,9 +1,16 @@
 {% extends 'layout.html' %} {% block body %}
-<div class="row">
-  <form class="col-12 col-sm-12 col-md-6 mx-auto" id="video-upload" , method="POST">
+<div class="row mt-3">
+  <form
+    class="col-12 col-sm-12 col-md-6 mx-auto"
+    id="video-upload"
+    ,
+    method="POST"
+  >
+    <h4 class="mx-auto my-3 text-center">
+      Upload Video
+    </h4>
     <div class="form-group justify-content-center">
       <input
-        required
         name="url"
         class="form-control"
         type="text"
@@ -11,10 +18,15 @@
       />
     </div>
     <div class="form-group d-flex justify-content-center">
-      <button id="video-submit" class="btn btn-secondary" type="submit">
+      <button
+        disabled
+        id="video-submit"
+        class="btn btn-secondary"
+        type="submit"
+      >
         <span
+          style="display: none"
           class="spinner-border spinner-border-sm"
-          hidden
           id="upload-spinner"
           role="status"
           aria-hidden="true"
@@ -22,17 +34,22 @@
         <span id="upload-text">UPLOAD</span>
       </button>
     </div>
-    <div hidden class="form-group alert alert-danger text-center" id="upload-error"></div>
-    <figure hidden class="figure row mx-0 justify-content-center" id="video-container">
+    <div
+      style="display: none"
+      class="form-group alert alert-danger text-center"
+      id="upload-error"
+    ></div>
+    <figure
+      style="display: none"
+      class="figure row mx-0 mt-5 justify-content-center"
+      id="video-container"
+    >
       <figcaption
         id="originalVideoTitle"
         class="figure-caption w-100 text-left"
       ></figcaption>
       <div class="w-100"></div>
-      <iframe
-        id="video-preview"
-        class="figure-img img-fluid rounded w-100"
-      >
+      <iframe id="video-preview" class="figure-img img-fluid rounded w-100">
       </iframe>
       <div class="w-100"></div>
       <figcaption class="figure-caption w-100 text-right">
@@ -40,16 +57,68 @@
       </figcaption>
     </figure>
   </form>
-  <!-- <form method="POST" id="video-process">
-      <div class="form-group">
-          <button class="btn btn-warning" type="submit">CONVERT VIDEO</button>
-      </div>
-  </form> -->
 </div>
-
-<button id="color-picker">
-  Pick a color
-</button>
-<input type="text" id="example2" value="#208EB3" readonly></input>
-
+<!-- <div class="w-100"></div> -->
+<div class="row mb-5 pb-5">
+  <form
+    style="display: none"
+    class="col-12 col-sm-12 col-md-6 mx-auto"
+    method="POST"
+    id="color-choose"
+  >
+    <h4 class="mx-auto my-3 text-center">
+      Choose Team Colors
+    </h4>
+    <div class="form-group d-flex justify-content-between">
+      <input
+        name="picker1"
+        class="form-control picker mr-3"
+        type="text"
+        id="picker1"
+        readonly
+        placeholder="Team #1"
+      />
+      <input
+        name="picker2"
+        class="form-control picker ml-3"
+        type="text"
+        id="picker2"
+        readonly
+        placeholder="Team #2"
+      />
+    </div>
+    <div class="form-group d-flex">
+      <button
+        disabled
+        id="color-submit"
+        class="btn btn-warning m-auto"
+        type="submit"
+      >
+        CONVERT
+      </button>
+    </div>
+  </form>
+</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
+<div>ay kalam</div>
 {% endblock %}

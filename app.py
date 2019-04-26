@@ -42,6 +42,8 @@ def previewVideo(url):
 
 
 def downloadFromYoutube(url):
+    os.makedirs('videos/temp',exist_ok=True)
+    
     yt = YouTube(url)
     title = yt.title
     yt.streams.first().download(output_path='videos/temp' ,filename="video1")
