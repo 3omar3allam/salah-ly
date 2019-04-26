@@ -48,3 +48,7 @@ def downloadFromYoutube(url):
     title = yt.title
     yt.streams.first().download(output_path='videos/temp' ,filename="video1")
     return title, '/videos/temp/video1.mp4'
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
+    app.run(port=port)
