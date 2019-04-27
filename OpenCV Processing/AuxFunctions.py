@@ -61,28 +61,229 @@ def imgHistogram (image, mask=None, maskFlag = 0, channelNo = 0):
     return hist
 
 
-def maxRangeFromHisto (hist, maxIndex, percentageFromAverage):
+def maxRangeFromHisto (maxIndexH,maxIndexS,maxIndexV):
     # starting at the maxIndex, and getting the range in the histogram
     # where the Y axis value is more than (curve average / percentageFromAverage)
-    endIndex = maxIndex
-    startIndex = maxIndex
-    Range = sum(hist) / (len(hist) * percentageFromAverage)
+    # endIndex = maxIndex
+    # startIndex = maxIndex
+    # Range = sum(hist) / (len(hist) * percentageFromAverage)
 
-    while True:
-        endIndex = (endIndex + 1) % 256
-        if endIndex == maxIndex:
-            break
-        if hist[endIndex] < Range:
-            endIndex = (endIndex - 1) % 256
-            break
+    # while True:
+    #     endIndex = (endIndex + 1) % 256
+    #     if endIndex == maxIndex:
+    #         break
+    #     if hist[endIndex] < Range:
+    #         endIndex = (endIndex - 1) % 256
+    #         break
 
-    while True:
-        startIndex = (startIndex - 1) % 256
-        if startIndex == maxIndex:
-            break
-        if hist[startIndex] < Range:
-            startIndex = (startIndex + 1) % 256
-            break
+    # while True:
+    #     startIndex = (startIndex - 1) % 256
+    #     if startIndex == maxIndex:
+    #         break
+    #     if hist[startIndex] < Range:
+    #         startIndex = (startIndex + 1) % 256
+    #         break
+    startIndex=[0,0,0]
+    endIndex=[0,0,0]
+    if maxIndexH<=8:
+        startIndex[0]=0
+        endIndex[0]=8
+    elif maxIndexH<=37 :
+        startIndex[0]=9
+        endIndex[0]=37
+    elif maxIndexH<=75 :
+        startIndex[0]=38
+        endIndex[0]=75        
+    elif maxIndexH<=146 :
+        startIndex[0]=76
+        endIndex[0]=146        
+    elif maxIndexH<=207 :
+        startIndex[0]=147
+        endIndex[0]=207        
+    elif maxIndexH<=277 :
+        startIndex[0]=208
+        endIndex[0]=277    
+    elif maxIndexH<=346 :
+        startIndex[0]=278
+        endIndex[0]=346        
+    elif maxIndexH<=360 :
+        startIndex[0]=347
+        endIndex[0]=360  
+    if maxIndexS<=25:
+        startIndex[1]=0
+        endIndex[1]=25
+    elif maxIndexS<=34 :
+        startIndex[1]=26
+        endIndex[1]=34
+    elif maxIndexS<=59 :
+        startIndex[1]=35
+        endIndex[1]=59
+    elif maxIndexS<=79 :
+        startIndex[1]=60
+        endIndex[1]=79
+    elif maxIndexS<=87 :
+        startIndex[1]=80
+        endIndex[1]=87
+    elif maxIndexS<=100 :
+        startIndex[1]=88
+        endIndex[1]=100
+    if maxIndexV<=3:
+        startIndex[2]=0
+        endIndex[2]=3
+    elif maxIndexV<=8 :
+        startIndex[2]=4
+        endIndex[2]=8
+    elif maxIndexV<=39 :
+        startIndex[2]=9
+        endIndex[2]=39
+    elif maxIndexV<=75 :
+        startIndex[2]=40
+        endIndex[2]=75
+    elif maxIndexV<=100 :
+        startIndex[2]=76
+        endIndex[2]=100
+    startIndex[0]=int(round(startIndex[0]/360*180))
+    endIndex[0]=int(round(endIndex[0]/360*180 ))
+    startIndex[1]=int(round(startIndex[1]/100*255))
+    endIndex[1]=int(round(endIndex[1]/100*255))
+    startIndex[2]=int(round(startIndex[2]/100*255))
+    endIndex[2]=int(round(endIndex[2]/100*255))
+    return startIndex,endIndex                                                                                                              
+    # HSVColors=[]
+    # HSVColors.append([[0,360],[0,100],[0,3]]) #[[Hrange][Srange][Vrange]] Black 
+    # HSVColors.append([[0,360],[0,25],[96,100]]) #[[Hrange][Srange][Vrange]] around white
 
-    return startIndex, endIndex
+    # HSVColors.append([[0,8],[26,34],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[35,59],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[60,79],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[80,87],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[88,100],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[26,34],[8,39]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[35,59],[8,39]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[60,79],[8,39]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[80,87],[8,39]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[0,8],[88,100],[8,39]]) #[[Hrange][Srange][Vrange]]
+
+
+
+    # HSVColors.append([[9,37],[26,34],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[80,87],[40,75]])  #[[Hrange][Srange][Vrange]]
+    # HSVColors.append([[9,37],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]
+
+
+
+
+    # HSVColors.append([[38,75],[26,34],[40,75]])  #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[80,87],[40,75]])#[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[38,75],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+
+    # HSVColors.append([[76,146],[26,34],[40,75]])  #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[80,87],[40,75]])#[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[76,146],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+
+    # HSVColors.append([[147,207],[26,34],[40,75]])  #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[147,207],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+
+    # HSVColors.append([[208,277],[26,34],[40,75]])  #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[26,34],[76,100]])#[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[208,277],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+
+    # HSVColors.append([[278,346],[26,34],[40,75]])  #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[278,346],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+
+    # HSVColors.append([[347,360],[26,34],[40,75]])  #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[35,59],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[60,79],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[80,87],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[26,34],[76,100]]) #[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[35,59],[40,75]] )#[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[60,79],[40,75]] )#[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[80,87],[40,75]] )#[[Hrange][Srange][Vrange]]   
+    # HSVColors.append([[347,360],[88,100],[40,75]]) #[[Hrange][Srange][Vrange]]   
+    
 
