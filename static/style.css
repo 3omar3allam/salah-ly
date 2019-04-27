@@ -7,7 +7,6 @@
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   box-sizing: border-box;
-  min-height: 100vh;
 }
 
 /** START HEADER **/
@@ -17,6 +16,7 @@ body {
 }
 .navbar-brand {
   font-family: 'Good Times';
+  cursor: pointer;
 }
 .nav-item {
   text-align: center;
@@ -34,7 +34,24 @@ body {
   }
 }
 /** END HEADER **/
+
+
+/** BEGIN MAIN **/
 #video-preview {
   border: 0;
 }
-/** BEGIN MAIN **/
+
+.picker {
+	border-width: 2px;
+	border-style: solid;
+  text-transform: uppercase;
+}
+
+#picker1 {
+	border-left-width: 2em;
+	border-color: red;
+}
+#picker2 {
+  border-right-width: 2em;
+	border-color: blue;
+}

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, jsonify, send_file
+from flask import Flask, render_template, redirect, request, jsonify, send_file, send_from_directory
 from flask_json import FlaskJSON, json_response
 from pymongo import MongoClient
 
@@ -7,7 +7,7 @@ load_dotenv(override=True)
 import os
 
 import cv2
-from pytube import YouTube
+from packages.pytube import YouTube
 
 app = Flask(__name__)
 FlaskJSON(app)
@@ -41,8 +41,18 @@ def previewVideo(url):
         return json_response(status_=404)
 
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static', 'icon'),
+                               'favicon.ico', mimetype='image/png')
+
 def downloadFromYoutube(url):
+    os.makedirs('videos/temp',exist_ok=True)
+    
     yt = YouTube(url)
     title = yt.title
     yt.streams.first().download(output_path='videos/temp' ,filename="video1")
     return title, '/videos/temp/video1.mp4'
+
+if __name__ == '__main__':
+    app.run()
