@@ -7,7 +7,6 @@
 body {
   font-family: Roboto, "Helvetica Neue", sans-serif;
   box-sizing: border-box;
-  min-height: 100vh;
 }
 
 /** START HEADER **/
@@ -17,6 +16,7 @@ body {
 }
 .navbar-brand {
   font-family: 'Good Times';
+  cursor: pointer;
 }
 .nav-item {
   text-align: center;
@@ -41,13 +41,17 @@ body {
   border: 0;
 }
 
-#example2 {
-	width: 100px;
-	height: 30px;
-	line-height: 34px;
+.picker {
 	border-width: 2px;
-	border-left-width: 34px;
 	border-style: solid;
-	border-color: #208EB3;
-	text-transform: uppercase;
+  text-transform: uppercase;
+}
+
+#picker1 {
+	border-left-width: 2em;
+	border-color: red;
+}
+#picker2 {
+  border-right-width: 2em;
+	border-color: blue;
 }
