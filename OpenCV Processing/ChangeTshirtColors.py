@@ -6,6 +6,9 @@ import numpy as np
 
 def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferColor1, lower_color_bounds2, upper_color_bounds2, transferColor2) :
 
+    #Special Case Red Colour :
+    #                   lower_color_bounds>upper_color_bounds1 then this is red colour 
+    #         2 ranges :  (0,upper_color_bounds)  (lower_color_bounds,180)
     # converting img to HSV
     frame = img
     frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -16,51 +19,76 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
     transformationMatix2 = np.full((image_h, image_w, 3), transferColor2, dtype='uint8')
 
     # Masking (extracting pixels of the color range from the img)
-    mask1 = cv2.inRange(frame_HSV, lower_color_bounds1, upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
-    mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
-    mask2 = cv2.inRange(frame_HSV, lower_color_bounds2, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
-    mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
-    cv2.imshow("mask_rgb2", mask_rgb2)
-
-
-
+    if lower_color_bounds1[0]>upper_color_bounds1[0] :
+        mask1 = cv2.inRange(frame_HSV, 0, upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
+        mask12 = cv2.inRange(frame_HSV, lower_color_bounds1, 180)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask_rgb12 = cv2.cvtColor(mask12, cv2.COLOR_GRAY2BGR)        
+    else :
+        mask1 = cv2.inRange(frame_HSV, lower_color_bounds1, upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
+    if lower_color_bounds2[0]>upper_color_bounds2[0] :
+        mask2 = cv2.inRange(frame_HSV, 0, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
+        mask21 = cv2.inRange(frame_HSV, lower_color_bounds1, 180)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask_rgb21= cv2.cvtColor(mask21, cv2.COLOR_GRAY2BGR)   
+    else :
+        mask2 = cv2.inRange(frame_HSV,lower_color_bounds1, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
+        cv2.imshow("mask_rgb2", mask_rgb2)          
+            
     # cv2.imshow("Mssk RGB  ", mask_rgb)
     maskedFrame1 = frame & mask_rgb1
     maskedFrame2 = frame & mask_rgb2
-    cv2.imshow("maskedFrame2",maskedFrame2)
+    if lower_color_bounds1[0]>upper_color_bounds1[0] :
+        maskedFrame12 = frame & mask_rgb12
+    if lower_color_bounds2[0]>upper_color_bounds2[0] :
+        maskedFrame21 = frame & mask_rgb21   
+        cv2.imshow("maskedFrame2",maskedFrame2)
 
 
     # Thresholding the mask to get mask of all 1s
     ret1, thresholdedMask1 = cv2.threshold(maskedFrame1, 0, 255, cv2.THRESH_BINARY)
     ret2, thresholdedMask2 = cv2.threshold(maskedFrame2, 0, 255, cv2.THRESH_BINARY)
-
-    # Creating a mask of the transformation matrix values (will be added to original img to change color)
+    if lower_color_bounds1[0]>upper_color_bounds1[0] :
+        ret12, thresholdedMask12 = cv2.threshold(maskedFrame12, 0, 255, cv2.THRESH_BINARY)
+    if lower_color_bounds2[0]>upper_color_bounds2[0] :
+        ret21, thresholdedMask21 = cv2.threshold(maskedFrame21, 0, 255, cv2.THRESH_BINARY)    # Creating a mask of the transformation matrix values (will be added to original img to change color)
     maskedTransformationMatrix1 = thresholdedMask1 & transformationMatix1
     maskedTransformationMatrix2 = thresholdedMask2 & transformationMatix2
-    cv2.imshow("maskedTransformationMatrix2", maskedTransformationMatrix2)
+    if lower_color_bounds1[0]>upper_color_bounds1[0] :
+        maskedTransformationMatrix12 = thresholdedMask12 & transformationMatix1
+    if lower_color_bounds2[0]>upper_color_bounds2[0] :
+        maskedTransformationMatrix21 = thresholdedMask21 & transformationMatix2    
+        cv2.imshow("maskedTransformationMatrix1", maskedTransformationMatrix2)
 
 
     # Applying color transformation
     newFrame_HSV = frame_HSV + maskedTransformationMatrix1
     newFrame_HSV = newFrame_HSV + maskedTransformationMatrix2
-
+    if lower_color_bounds1[0]>upper_color_bounds1[0] :
+        newFrame_HSV = newFrame_HSV + maskedTransformationMatrix12
+    if lower_color_bounds2[0]>upper_color_bounds2[0] :
+        newFrame_HSV = newFrame_HSV + maskedTransformationMatrix21    
     return cv2.cvtColor(newFrame_HSV, cv2.COLOR_HSV2BGR)
 
 
 def main():
 
-    img = cv2.imread('Senegal-VS-Colombia.jpg')
+    img = cv2.imread('Test_Cases//3.png')
     # red
-    lower_color_bounds1 = (0,120,70)
-    upper_color_bounds1 = (16,255,255)
+    lower_color_bounds1 = (160,40,10)
+    upper_color_bounds1 = (20,255,255)
     # blue
-    lower_color_bounds2 = (70,0,0)
-    upper_color_bounds2 = (120,255,255)
+    lower_color_bounds2 = (100,100,100)
+    upper_color_bounds2 = (100,100,100)
     # green
     # lower_color_bounds = (35, 50, 40 )
     # upper_color_bounds = (55, 255, 255)
-    recoloredFrame = ChangeTshirtColors(img, lower_color_bounds1, upper_color_bounds1, (100, 0, 0),lower_color_bounds2, upper_color_bounds2, (-70, 0, 0)) # (100,0,0) is the value added to the red pixels
-    cv2.imshow("recolored frame", recoloredFrame)
+    recoloredFrame = ChangeTshirtColors(img, lower_color_bounds1, upper_color_bounds1, (100, 0, 0),lower_color_bounds2, upper_color_bounds2, (50, 0, 0)) # (100,0,0) is the value added to the red pixels
+    cv2.namedWindow("recolored frame", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
+    recoloredFrames = cv2.resize(recoloredFrame, (960, 540))
+    cv2.imshow("recolored frame", recoloredFrames)
     cv2.waitKey()
 
 
