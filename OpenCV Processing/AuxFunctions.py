@@ -106,9 +106,6 @@ def maxRangeFromHisto (H,maxIndexH,X):
     elif maxIndexH<=180 :
         startIndex=171
         endIndex=180        
-    elif maxIndexH<=360 :
-        startIndex=347
-        endIndex=360  
 
     return startIndex,endIndex                                                                                                              
 
