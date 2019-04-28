@@ -26,17 +26,17 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
 
     # Masking (extracting pixels of the color range from the img)
     if Red1:
-        mask1 = cv2.inRange(frame_HSV, 0, upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask1 = cv2.inRange(frame_HSV,(0,40,40), upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
-        mask12 = cv2.inRange(frame_HSV, lower_color_bounds1, 180)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask12 = cv2.inRange(frame_HSV, lower_color_bounds1, (180,255,255))  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb12 = cv2.cvtColor(mask12, cv2.COLOR_GRAY2BGR)        
     else :
         mask1 = cv2.inRange(frame_HSV, lower_color_bounds1, upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
     if Red2 :
-        mask2 = cv2.inRange(frame_HSV, 0, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask2 = cv2.inRange(frame_HSV, (0,40,40), upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
-        mask21 = cv2.inRange(frame_HSV, lower_color_bounds1, 180)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask21 = cv2.inRange(frame_HSV, lower_color_bounds1, (180,255,255))  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb21= cv2.cvtColor(mask21, cv2.COLOR_GRAY2BGR)   
     else :
         mask2 = cv2.inRange(frame_HSV,lower_color_bounds1, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
@@ -83,7 +83,7 @@ def main():
 
     img = cv2.imread('Test_Cases//3.png')
     # red
-    lower_color_bounds1 = (160,40,10)
+    lower_color_bounds1 = (160,40,40)
     upper_color_bounds1 = (20,255,255)
     # blue
     lower_color_bounds2 = (100,100,100)
