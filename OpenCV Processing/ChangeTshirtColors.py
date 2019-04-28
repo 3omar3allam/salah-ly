@@ -23,10 +23,9 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
     image_h, image_w, image_c = frame.shape
     transformationMatix1 = np.full((image_h, image_w, 3), transferColor1, dtype='uint8')
     transformationMatix2 = np.full((image_h, image_w, 3), transferColor2, dtype='uint8')
-
     # Masking (extracting pixels of the color range from the img)
     if Red1:
-        mask1 = cv2.inRange(frame_HSV,(0,40,40), upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask1 = cv2.inRange(frame_HSV,(0,40,2), upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
         mask12 = cv2.inRange(frame_HSV, lower_color_bounds1, (180,255,255))  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb12 = cv2.cvtColor(mask12, cv2.COLOR_GRAY2BGR)        
@@ -34,12 +33,12 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
         mask1 = cv2.inRange(frame_HSV, lower_color_bounds1, upper_color_bounds1)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
     if Red2 :
-        mask2 = cv2.inRange(frame_HSV, (0,40,40), upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask2 = cv2.inRange(frame_HSV, (0,40,2), upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
         mask21 = cv2.inRange(frame_HSV, lower_color_bounds1, (180,255,255))  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb21= cv2.cvtColor(mask21, cv2.COLOR_GRAY2BGR)   
     else :
-        mask2 = cv2.inRange(frame_HSV,lower_color_bounds1, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
+        mask2 = cv2.inRange(frame_HSV,lower_color_bounds2, upper_color_bounds2)  # Detect an object based on the range of pixel values in the HSV colorspace.
         mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
         cv2.imshow("mask_rgb2", mask_rgb2)          
             
@@ -66,32 +65,31 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
         maskedTransformationMatrix12 = thresholdedMask12 & transformationMatix1
     if Red2 :
         maskedTransformationMatrix21 = thresholdedMask21 & transformationMatix2    
-        cv2.imshow("maskedTransformationMatrix1", maskedTransformationMatrix2)
 
 
     # Applying color transformation
-    newFrame_HSV = frame_HSV + maskedTransformationMatrix1
-    newFrame_HSV = newFrame_HSV + maskedTransformationMatrix2
+    newFrame_HSV = (frame_HSV + maskedTransformationMatrix1)
+    newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix2)
     if Red1:
-        newFrame_HSV = newFrame_HSV + maskedTransformationMatrix12
+        newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix12)
     if Red2 :
-        newFrame_HSV = newFrame_HSV + maskedTransformationMatrix21    
+        newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix21)
     return cv2.cvtColor(newFrame_HSV, cv2.COLOR_HSV2BGR)
 
 
 def main():
 
-    img = cv2.imread('Test_Cases//3.png')
+    img = cv2.imread('Test_Cases//Orange.png')
     # red
-    lower_color_bounds1 = (160,40,40)
-    upper_color_bounds1 = (20,255,255)
+    lower_color_bounds1 = (165,40,0)
+    upper_color_bounds1 = (19,255,255)
     # blue
-    lower_color_bounds2 = (100,100,100)
-    upper_color_bounds2 = (100,100,100)
+    lower_color_bounds2 = (110,40,0)
+    upper_color_bounds2 = (170,255,255)
     # green
     # lower_color_bounds = (35, 50, 40 )
     # upper_color_bounds = (55, 255, 255)
-    recoloredFrame = ChangeTshirtColors(img, lower_color_bounds1, upper_color_bounds1, (100, 0, 0),lower_color_bounds2, upper_color_bounds2, (50, 0, 0)) # (100,0,0) is the value added to the red pixels
+    recoloredFrame = ChangeTshirtColors(img, lower_color_bounds1, upper_color_bounds1, (50, 0,0),lower_color_bounds2, upper_color_bounds2, (130, -30, -30)) # (100,0,0) is the value added to the red pixels
     cv2.namedWindow("recolored frame", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
     recoloredFrames = cv2.resize(recoloredFrame, (960, 540))
     cv2.imshow("recolored frame", recoloredFrames)

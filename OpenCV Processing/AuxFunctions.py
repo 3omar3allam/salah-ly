@@ -85,27 +85,24 @@ def maxRangeFromHisto (H,maxIndexH,X):
     #         break
     startIndex=0
     endIndex=0
-    if maxIndexH<=20:
-        startIndex=0
-        endIndex=20
-    elif maxIndexH<=40 :
-        startIndex=21
-        endIndex=40
-    elif maxIndexH<=80 :
-        startIndex=41
-        endIndex=80        
-    elif maxIndexH<=95 :
-        startIndex=81
-        endIndex=95      
-    elif maxIndexH<=140 :
-        startIndex=96
-        endIndex=140        
-    elif maxIndexH<=170 :
-        startIndex=141
-        endIndex=170    
-    elif maxIndexH<=180 :
-        startIndex=171
-        endIndex=180        
+    if maxIndexH<=19 || maxIndexH>170:   #Red
+        startIndex=165
+        endIndex=19
+    elif maxIndexH<=33 :           #Yellow 
+        startIndex=20
+        endIndex=35
+    elif maxIndexH<=70 :              #Greenstadium
+        startIndex=36
+        endIndex=70        
+    elif maxIndexH<=90 :         #dark green
+        startIndex=71
+        endIndex=90     
+    elif maxIndexH<=110 :   #light blue
+        startIndex=91
+        endIndex=110        
+    elif maxIndexH<=169 :   #blue
+        startIndex=111
+        endIndex=169         
 
     return startIndex,endIndex                                                                                                              
 
