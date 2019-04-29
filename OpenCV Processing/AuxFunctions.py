@@ -78,7 +78,7 @@ def calculateChangeColor(colorselector, originalColor):
     if colorselector == 0:
         color = np.array([0, 0, 0])  # red
     elif colorselector == 1:
-        color = np.array([20, 0, 0])  # orange
+        color = np.array([17, 0, 0])  # orange
     elif colorselector == 2:
         color = np.array([30, 0, 0])  # yellow
     elif colorselector == 3:
