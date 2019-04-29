@@ -25,22 +25,26 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
     transformationMatix1 = np.full((image_h, image_w, 3), transferColor1, dtype='uint8')
     transformationMatix2 = np.full((image_h, image_w, 3), transferColor2, dtype='uint8')
     modMatrix = np.full ((image_h, image_w), 180, dtype='uint8')
+    # SVTransformationMatrix used to prevent S and V values to be more than 255
+    SVTransformationMatrix = np.full ((image_h, image_w), 255, dtype='uint16')
 
     # Masking (extracting pixels of the color range from the img)
     # Detect an object based on the range of pixel values in the HSV colorspace.
     # special case for red handling, as red has 2 ranges
     if Red1:
-        mask1 = cv2.inRange(frame_HSV,np.array([0, 40, 2]), upper_color_bounds1)
+        mask1 = cv2.inRange(frame_HSV, np.array([0, 40, 2]), upper_color_bounds1)
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
         mask12 = cv2.inRange(frame_HSV, lower_color_bounds1, np.array([180, 255, 255]))
-        mask_rgb12 = cv2.cvtColor(mask12, cv2.COLOR_GRAY2BGR)        
+        mask_rgb12 = cv2.cvtColor(mask12, cv2.COLOR_GRAY2BGR)
     else:
         mask1 = cv2.inRange(frame_HSV, lower_color_bounds1, upper_color_bounds1)
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
+        cv2.imshow("s", mask_rgb1)
+        cv2.waitKey()
     if Red2:
         mask2 = cv2.inRange(frame_HSV, np.array([0, 40, 2]), upper_color_bounds2)
         mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
-        mask21 = cv2.inRange(frame_HSV, lower_color_bounds1, np.array([180, 255, 255]))
+        mask21 = cv2.inRange(frame_HSV, lower_color_bounds2, np.array([180, 255, 255]))
         mask_rgb21 = cv2.cvtColor(mask21, cv2.COLOR_GRAY2BGR)
     else:
         mask2 = cv2.inRange(frame_HSV,lower_color_bounds2, upper_color_bounds2)
@@ -61,6 +65,7 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
         ret12, thresholdedMask12 = cv2.threshold(maskedFrame12, 0, 255, cv2.THRESH_BINARY)
     if Red2:
         ret21, thresholdedMask21 = cv2.threshold(maskedFrame21, 0, 255, cv2.THRESH_BINARY)
+
     maskedTransformationMatrix1 = thresholdedMask1 & transformationMatix1
     maskedTransformationMatrix2 = thresholdedMask2 & transformationMatix2
     if Red1:
@@ -69,6 +74,7 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
         maskedTransformationMatrix21 = thresholdedMask21 & transformationMatix2    
 
     # Applying color transformation
+    # Converting the frame to uint16 to avoid overflow when numbers are more than 255 due to addition
     frame_HSV = frame_HSV.astype(np.uint16)
     newFrame_HSV = (frame_HSV + maskedTransformationMatrix1)
     newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix2)
@@ -77,7 +83,13 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
     if Red2:
         newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix21)
 
-    newFrame_HSV[:,:,0] = np.remainder(newFrame_HSV[:,:,0], modMatrix)
+    # performing modulo on H channel, to get numbers in range [0:180] only
+    newFrame_HSV[:, :, 0] = np.remainder(newFrame_HSV[:, :, 0], modMatrix)
+    # SVTransformationMatrix used to prevent S and V values to be more than 255
+    newFrame_HSV[:, :, 1] = np.minimum(newFrame_HSV[:, :, 1], SVTransformationMatrix)
+    newFrame_HSV[:, :, 2] = np.minimum(newFrame_HSV[:, :, 2], SVTransformationMatrix)
+
+    # converting back to uint8
     newFrame_HSV = newFrame_HSV.astype(np.uint8)
 
     return cv2.cvtColor(newFrame_HSV, cv2.COLOR_HSV2BGR)
@@ -85,19 +97,22 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
 
 def main():
 
-    img = cv2.imread('Test_Cases//3.png')
-    l1, u1, l2, u2 = extractShirtsColors(img)
-    # red
-    # lower_color_bounds1 = (165,40,0)
-    # upper_color_bounds1 = (19,255,255)
-    # blue
-    # lower_color_bounds2 = (110,40,0)
-    # upper_color_bounds2 = (170,255,255)
-    # green
-    # lower_color_bounds = (35, 50, 40 )
-    # upper_color_bounds = (55, 255, 255)
-    # color = calculateChangeColor(np.array([210, 0, 0]), (l1+u1)/2)
-    recoloredFrame = ChangeTshirtColors(img, l1, u1, (110, 0, 0), l2, u2, (30, 0, 0))
+    img = cv2.imread('Test_Cases//blue5.png')
+    # lower range, upper range and max pixels for each team
+    l1, u1, m1, l2, u2, m2 = extractShirtsColors(img)
+
+    # if the 2 detected ranges are the same, we will work on only one channel
+    if l1[0] == l2[0] and u1[0] == u2[0]:
+        l2 = np.array([0, 0, 0])
+        u2 = np.array([0, 0, 0])
+
+    # choosing the 2 new colors for the teams, choose one of the colors and put its number in the 1st argument of the fn
+    # (0:red) (1:orange) (2:yellow) (3:green) (4:dark green) (5:light blue) (6:blue)
+    # (7:dark blue) (8:light violet) (9:dark violet) (-1:no change)
+    color1 = calculateChangeColor(0, m1)
+    color2 = calculateChangeColor(-1, m2)
+
+    recoloredFrame = ChangeTshirtColors(img, l1, u1, color1, l2, u2, color2)
     cv2.namedWindow("recolored frame", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
     recoloredFrames = cv2.resize(recoloredFrame, (960, 540))
     cv2.imshow("recolored frame", recoloredFrames)

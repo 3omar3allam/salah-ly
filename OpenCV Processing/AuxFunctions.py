@@ -1,26 +1,5 @@
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
-
-
-def apply_color_overlay(image,mask, intensity = 0.5,blue = 0, green = 0, red = 0):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
-    image_h, image_w, image_c = image.shape
-
-    # creating matrix of same img dimensions and filling it with required color divided by 255
-    color_bgra = (blue / 255, green / 255, red / 255)
-    overlay = np.full((image_h, image_w, 3), color_bgra, dtype='float_')
-
-    # converting the mask to desired color, and adding alpha channel initialized by ones
-    tempMask = overlay*mask
-    tempOnes = np.ones((image_h, image_w, 1))
-    temp = np.concatenate((tempMask, tempOnes), axis=2)
-
-    # overlaying the mask on the image
-    cv2.addWeighted(np.uint8(temp), intensity, image, 1.0, 0, image)
-    image = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
-
-    return image
 
 
 def removeBackGround(frame, lower_color, higher_color):
@@ -28,7 +7,7 @@ def removeBackGround(frame, lower_color, higher_color):
 
     # extracting only the pitch
     mask = cv2.inRange(hsvFrame, lower_color, higher_color)
-    mask=cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    mask = cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
     # maskedFrame = cv2.bitwise_and(hsvFrame, hsvFrame, mask=mask)
     maskedFrame = frame & mask
 
@@ -69,28 +48,6 @@ def imgHistogram (image, mask=None, maskFlag = 0, channelNo = 0):
 
 
 def maxRangeFromHisto (maxIndexH):
-    # starting at the maxIndex, and getting the range in the histogram
-    # where the Y axis value is more than (curve average / percentageFromAverage)
-    # endIndex = maxIndex
-    # startIndex = maxIndex
-    # Range = sum(hist) / (len(hist) * percentageFromAverage)
-
-    # while True:
-    #     endIndex = (endIndex + 1) % 256
-    #     if endIndex == maxIndex:
-    #         break
-    #     if hist[endIndex] < Range:
-    #         endIndex = (endIndex - 1) % 256
-    #         break
-
-    # while True:
-    #     startIndex = (startIndex - 1) % 256
-    #     if startIndex == maxIndex:
-    #         break
-    #     if hist[startIndex] < Range:
-    #         startIndex = (startIndex + 1) % 256
-    #         break
-
     # assigning every color to certain range according to hist max value
     startIndex = 0
     endIndex = 0
@@ -100,28 +57,68 @@ def maxRangeFromHisto (maxIndexH):
     elif maxIndexH <= 31:                    # Yellow
         startIndex = 20
         endIndex = 31
-    elif maxIndexH <= 60:                    # Greenstadium
+    elif maxIndexH <= 60:                    # Green stadium
         startIndex = 32
         endIndex = 60
     elif maxIndexH <= 88:                    # dark green
         startIndex = 61
         endIndex = 88
-    elif maxIndexH <= 108:                   # light blue
-        startIndex = 89
-        endIndex = 108
+    # elif maxIndexH <= 103:                 # light blue
+    #     startIndex = 89
+    #     endIndex = 103
     elif maxIndexH <= 169:                   # blue
-        startIndex = 109
+        startIndex = 104
         endIndex = 169
 
     return startIndex, endIndex
 
 
-def calculateChangeColor(color, originalColor):
+def calculateChangeColor(colorselector, originalColor):
     # this function is used to get the desired color to be added to original color, to get the new color chosen by user
-    temp = color[0] - originalColor[0]
-    # temp1=color[1]-originalColor[1]
-    # temp2=color[2]-originalColor[2]
-    return np.array([temp, 0, 0])
+    if colorselector == 0:
+        color = np.array([0, 0, 0])  # red
+    elif colorselector == 1:
+        color = np.array([20, 0, 0])  # orange
+    elif colorselector == 2:
+        color = np.array([30, 0, 0])  # yellow
+    elif colorselector == 3:
+        color = np.array([50, 0, 0])  # green
+    elif colorselector == 4:
+        color = np.array([75, 0, 0])  # dark green
+    elif colorselector == 5:
+        color = np.array([95, 0, 0])  # light blue
+    elif colorselector == 6:
+        color = np.array([110, 0, 0])  # blue
+    elif colorselector == 7:
+        color = np.array([130, 0, 0])  # dark blue
+    elif colorselector == 8:
+        color = np.array([140, 0, 0])  # light violet
+    elif colorselector == 9:
+        color = np.array([165, 0, 0])  # dark violet
+    elif colorselector == -1:
+        return np.array([0, 0, 0])  # no change
+
+    #detecting if the color dark blue
+    blue = False
+    darkblue = False
+    if 105 <= originalColor[0] <= 168:
+        blue = True
+    if blue and originalColor[0] > 119:
+        darkblue = True
+    if blue and originalColor[1] > 35:
+        darkblue = True
+
+    temp = np.mod((color[0] - originalColor[0]), 180)
+
+    # if the color is dark blue, we have to change S and V of the transfer color
+    if darkblue:
+        temp1 = (255 - originalColor[1])/2
+        temp2 = (255 - originalColor[2])/2
+    else:
+        temp1 = 0
+        temp2 = 0
+
+    return np.array([temp, temp1, temp2])
 
     
 

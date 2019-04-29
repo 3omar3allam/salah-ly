@@ -21,7 +21,11 @@ def extractShirtsColors (img):
     # plt.plot(hist, color='r')
     # plt.xlim([0, 180])
     # plt.show()
-    # hist = imgHistogram(img, None, 1, 2)
+    hist = imgHistogram(img, None, 1, 1)
+    # plt.plot(hist, color='r')
+    # plt.xlim([0, 255])
+    # plt.show()
+    hist = imgHistogram(img, None, 1, 2)
     # plt.plot(hist, color='r')
     # plt.xlim([0, 255])
     # plt.show()
@@ -64,15 +68,21 @@ def extractShirtsColors (img):
     # plt.xlim([0, 180])
     # plt.show()
 
-    maxIndex = np.argmax(hist)
+    maxIndex1 = np.argmax(hist)
 
-    # hist = imgHistogram(img, playersPixels, 0, 2)
+    hist = imgHistogram(img, playersPixels, 0, 1)
+    maxIndex11 = np.argmax(hist)
+    # plt.plot(hist, color='r')
+    # plt.xlim([0, 255])
+    # plt.show()
+    hist = imgHistogram(img, playersPixels, 0, 2)
+    maxIndex12 = np.argmax(hist[:254])
     # plt.plot(hist, color='r')
     # plt.xlim([0, 255])
     # plt.show()
 
     # getting the max color range
-    startIndex, endIndex = maxRangeFromHisto(maxIndex)
+    startIndex, endIndex = maxRangeFromHisto(maxIndex1)
 
     lower_shirt_color = np.array([startIndex, 40, 5])
     upper_shirt_color = np.array([endIndex, 255, 255])
@@ -95,22 +105,31 @@ def extractShirtsColors (img):
     # second team only players histogram
     hist = imgHistogram(img, playersSameTeam, 0, 0)
     # plt.plot(hist, color='r')
-    # plt.xlim([0, 256])
+    # plt.xlim([0, 180])
     # plt.show()
 
-    maxIndex = np.argmax(hist)
+    maxIndex2 = np.argmax(hist)
+    hist = imgHistogram(img, playersSameTeam, 0, 1)
+    maxIndex21 = np.argmax(hist)
+    # plt.plot(hist, color='r')
+    # plt.xlim([0, 255])
+    # plt.show()
     hist = imgHistogram(img, playersSameTeam, 0, 2)
+    maxIndex22= np.argmax(hist[:254])
     # plt.plot(hist, color='r')
     # plt.xlim([0, 255])
     # plt.show()
 
     # getting the max color range
-    startIndex, endIndex = maxRangeFromHisto(maxIndex)
+    startIndex, endIndex = maxRangeFromHisto(maxIndex2)
 
     lower_shirt2_color = np.array([startIndex, 40, 5])
     upper_shirt2_color = np.array([endIndex, 255, 255])
 
-    return lower_shirt_color, upper_shirt_color, lower_shirt2_color, upper_shirt2_color
+    max1 = np.array([maxIndex1, maxIndex11, maxIndex12])
+    max2 = np.array([maxIndex2, maxIndex21, maxIndex22])
+
+    return lower_shirt_color, upper_shirt_color, max1, lower_shirt2_color, upper_shirt2_color, max2
 
 
 def main():
