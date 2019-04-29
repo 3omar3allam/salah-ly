@@ -106,11 +106,11 @@ def maxRangeFromHisto (maxIndexH):
     elif maxIndexH <= 88:                    # dark green
         startIndex = 61
         endIndex = 88
-    elif maxIndexH <= 110:                   # light blue
+    elif maxIndexH <= 108:                   # light blue
         startIndex = 89
-        endIndex = 110
+        endIndex = 108
     elif maxIndexH <= 169:                   # blue
-        startIndex = 111
+        startIndex = 109
         endIndex = 169
 
     return startIndex, endIndex

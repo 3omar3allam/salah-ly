@@ -24,6 +24,7 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
     image_h, image_w, image_c = frame.shape
     transformationMatix1 = np.full((image_h, image_w, 3), transferColor1, dtype='uint8')
     transformationMatix2 = np.full((image_h, image_w, 3), transferColor2, dtype='uint8')
+    modMatrix = np.full ((image_h, image_w), 180, dtype='uint8')
 
     # Masking (extracting pixels of the color range from the img)
     # Detect an object based on the range of pixel values in the HSV colorspace.
@@ -68,19 +69,23 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
         maskedTransformationMatrix21 = thresholdedMask21 & transformationMatix2    
 
     # Applying color transformation
+    frame_HSV = frame_HSV.astype(np.uint16)
     newFrame_HSV = (frame_HSV + maskedTransformationMatrix1)
     newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix2)
     if Red1:
         newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix12)
-    if Red2 :
+    if Red2:
         newFrame_HSV = (newFrame_HSV + maskedTransformationMatrix21)
+
+    newFrame_HSV[:,:,0] = np.remainder(newFrame_HSV[:,:,0], modMatrix)
+    newFrame_HSV = newFrame_HSV.astype(np.uint8)
 
     return cv2.cvtColor(newFrame_HSV, cv2.COLOR_HSV2BGR)
 
 
 def main():
 
-    img = cv2.imread('Test_Cases//Orange.png')
+    img = cv2.imread('Test_Cases//3.png')
     l1, u1, l2, u2 = extractShirtsColors(img)
     # red
     # lower_color_bounds1 = (165,40,0)
@@ -91,8 +96,8 @@ def main():
     # green
     # lower_color_bounds = (35, 50, 40 )
     # upper_color_bounds = (55, 255, 255)
-    color = calculateChangeColor(np.array([50, 0, 0]), (l1+u1)/2)
-    recoloredFrame = ChangeTshirtColors(img, l1, u1, color, l2, u2, (30, 0, 0))
+    # color = calculateChangeColor(np.array([210, 0, 0]), (l1+u1)/2)
+    recoloredFrame = ChangeTshirtColors(img, l1, u1, (110, 0, 0), l2, u2, (30, 0, 0))
     cv2.namedWindow("recolored frame", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions
     recoloredFrames = cv2.resize(recoloredFrame, (960, 540))
     cv2.imshow("recolored frame", recoloredFrames)

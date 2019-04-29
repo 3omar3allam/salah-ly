@@ -21,6 +21,11 @@ def extractShirtsColors (img):
     # plt.plot(hist, color='r')
     # plt.xlim([0, 180])
     # plt.show()
+    # hist = imgHistogram(img, None, 1, 2)
+    # plt.plot(hist, color='r')
+    # plt.xlim([0, 255])
+    # plt.show()
+
     startIndex, endIndex = maxRangeFromHisto(maxHist)  # getting the range of the playground color
 
     # Green color range for pitch detection
@@ -51,13 +56,21 @@ def extractShirtsColors (img):
     for i in range(len(newContours)):
         cv2.drawContours(playersPixels, newContours, i, color=(255, 255, 255), thickness=-1)
     playersPixels = playersPixels & img
+    # cv2.imshow("playersPixels", playersPixels)
+    # cv2.waitKey()
     hist = imgHistogram(img, playersPixels, 0, 0)
 
     # plt.plot(hist, color='r')
-    # plt.xlim([0, 256])
+    # plt.xlim([0, 180])
     # plt.show()
 
     maxIndex = np.argmax(hist)
+
+    # hist = imgHistogram(img, playersPixels, 0, 2)
+    # plt.plot(hist, color='r')
+    # plt.xlim([0, 255])
+    # plt.show()
+
     # getting the max color range
     startIndex, endIndex = maxRangeFromHisto(maxIndex)
 
@@ -76,6 +89,9 @@ def extractShirtsColors (img):
 
     playersSameTeam = removeBackGround(playersSameTeam, lower_pitch_color, upper_pitch_color)
 
+    # cv2.imshow("playerssameteam",playersSameTeam)
+    # cv2.waitKey()
+
     # second team only players histogram
     hist = imgHistogram(img, playersSameTeam, 0, 0)
     # plt.plot(hist, color='r')
@@ -83,6 +99,11 @@ def extractShirtsColors (img):
     # plt.show()
 
     maxIndex = np.argmax(hist)
+    hist = imgHistogram(img, playersSameTeam, 0, 2)
+    # plt.plot(hist, color='r')
+    # plt.xlim([0, 255])
+    # plt.show()
+
     # getting the max color range
     startIndex, endIndex = maxRangeFromHisto(maxIndex)
 
