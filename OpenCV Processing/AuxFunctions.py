@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
 
 
 def apply_color_overlay(image,mask, intensity = 0.5,blue = 0, green = 0, red = 0):
@@ -27,19 +28,21 @@ def removeBackGround(frame, lower_color, higher_color):
 
     # extracting only the pitch
     mask = cv2.inRange(hsvFrame, lower_color, higher_color)
-    maskedFrame = cv2.bitwise_and(hsvFrame, hsvFrame, mask=mask)
+    mask=cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR)
+    # maskedFrame = cv2.bitwise_and(hsvFrame, hsvFrame, mask=mask)
+    maskedFrame = frame & mask
 
     # convert hsv to gray for thresholding
-    maskedFrame_bgr = cv2.cvtColor(maskedFrame, cv2.COLOR_HSV2BGR)
-    maskedFrame_gray = cv2.cvtColor(maskedFrame_bgr, cv2.COLOR_BGR2GRAY)
+    maskedFrame_gray = cv2.cvtColor(maskedFrame, cv2.COLOR_BGR2GRAY)
 
     # Performing closing to remove noise
     kernel = np.ones((10, 10), np.uint8)
     thresholdedMask = cv2.threshold(maskedFrame_gray, 0, 255, cv2.THRESH_BINARY)[1]
     thresholdedMask = cv2.morphologyEx(thresholdedMask, cv2.MORPH_CLOSE, kernel)
+    thresholdedMask = cv2.cvtColor(thresholdedMask, cv2.COLOR_GRAY2BGR)
 
     # subtracting to get only the players without the background
-    removedBackground = frame-cv2.bitwise_and(frame, frame, mask=thresholdedMask)
+    removedBackground = frame - (frame & thresholdedMask)
 
     return removedBackground
 
@@ -57,11 +60,15 @@ def imgHistogram (image, mask=None, maskFlag = 0, channelNo = 0):
 
     # hist will be list of 255 elements, each carrying the no of pixels carrying this attribute
     # (H for example if cahnnelNo is 0)
-    hist = cv2.calcHist([imageHSV], [channelNo], thresholdedMask, [256], [0, 256])
+    if channelNo == 0:
+        upperHistRange = 180
+    else:
+        upperHistRange = 256
+    hist = cv2.calcHist([imageHSV], [channelNo], thresholdedMask, [upperHistRange], [0, upperHistRange])
     return hist
 
 
-def maxRangeFromHisto (H,maxIndexH,X):
+def maxRangeFromHisto (maxIndexH):
     # starting at the maxIndex, and getting the range in the histogram
     # where the Y axis value is more than (curve average / percentageFromAverage)
     # endIndex = maxIndex
@@ -83,28 +90,38 @@ def maxRangeFromHisto (H,maxIndexH,X):
     #     if hist[startIndex] < Range:
     #         startIndex = (startIndex + 1) % 256
     #         break
-    startIndex=0
-    endIndex=0
-    if maxIndexH<=19 || maxIndexH>170:   #Red
-        startIndex=165
-        endIndex=19
-    elif maxIndexH<=33 :           #Yellow 
-        startIndex=20
-        endIndex=35
-    elif maxIndexH<=70 :              #Greenstadium
-        startIndex=36
-        endIndex=70        
-    elif maxIndexH<=90 :         #dark green
-        startIndex=71
-        endIndex=90     
-    elif maxIndexH<=110 :   #light blue
-        startIndex=91
-        endIndex=110        
-    elif maxIndexH<=169 :   #blue
-        startIndex=111
-        endIndex=169         
 
-    return startIndex,endIndex                                                                                                              
+    # assigning every color to certain range according to hist max value
+    startIndex = 0
+    endIndex = 0
+    if maxIndexH <= 19 or maxIndexH > 170:   # Red
+        startIndex = 170
+        endIndex = 19
+    elif maxIndexH <= 31:                    # Yellow
+        startIndex = 20
+        endIndex = 31
+    elif maxIndexH <= 60:                    # Greenstadium
+        startIndex = 32
+        endIndex = 60
+    elif maxIndexH <= 88:                    # dark green
+        startIndex = 61
+        endIndex = 88
+    elif maxIndexH <= 110:                   # light blue
+        startIndex = 89
+        endIndex = 110
+    elif maxIndexH <= 169:                   # blue
+        startIndex = 111
+        endIndex = 169
+
+    return startIndex, endIndex
+
+
+def calculateChangeColor(color, originalColor):
+    # this function is used to get the desired color to be added to original color, to get the new color chosen by user
+    temp = color[0] - originalColor[0]
+    # temp1=color[1]-originalColor[1]
+    # temp2=color[2]-originalColor[2]
+    return np.array([temp, 0, 0])
 
     
 
