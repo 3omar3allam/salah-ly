@@ -37,9 +37,6 @@ def VideoProcessing(Color1,Color2) :
         else :
             break     
         #cv2.imshow('frame',frame)
-
-
-    recoloredFrame = ChangeTshirtColors(img, l1, u1, color1, l2, u2, color2)            
     video.release()
     cv2.destroyAllWindows()
 def main():
