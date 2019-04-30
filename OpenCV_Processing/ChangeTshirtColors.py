@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
-from detectTshirtColors import extractShirtsColors
-from AuxFunctions import calculateChangeColor
+from OpenCV_Processing.detectTshirtColors import extractShirtsColors
+from OpenCV_Processing.AuxFunctions import calculateChangeColor
 
 
 def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferColor1, lower_color_bounds2, upper_color_bounds2, transferColor2) :

@@ -1,10 +1,11 @@
 from flask import Flask, render_template, redirect, request, jsonify, send_file, send_from_directory
 from flask_json import FlaskJSON, json_response
-from pymongo import MongoClient
+# from pymongo import MongoClient
 
 from dotenv import load_dotenv
 load_dotenv(override=True)
 import os
+import json
 
 import cv2
 from packages.pytube import YouTube
@@ -12,8 +13,11 @@ from packages.pytube import YouTube
 app = Flask(__name__)
 FlaskJSON(app)
 
-client = MongoClient(os.getenv('MONGO_CONN_STR'))
-db = client['salah-ly']
+# client = MongoClient(os.getenv('MONGO_CONN_STR'))
+# db = client['salah-ly']
+
+start = None
+end = None
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -23,36 +27,57 @@ def home():
         try:
             url = request.form.get('url')
             title, path = downloadFromYoutube(url)
+            start = request.form.get('start')
+            end = request.form.get('end')
+            if start:
+                start = int(start)
+            if end:
+                end = int(end)
             return json_response(path = path, title=title)
-        except:
+        except Exception as error:
+            print('Upload error >>> ', error)
             return json_response(status_=404,data_={'message': 'Failed to get video'})
 
-
-@app.route('/login')
-def login():
-    return render_template('login.html')
-
-@app.route('/videos/temp/<string:url>')
-def previewVideo(url):
+@app.route('/videos/<string:filename>', methods=["GET"])
+def previewVideo(filename):
     try:
-        f = open(f'videos/temp/{url}','r')
-        return send_file(f'videos/temp/{url}')
+        return send_file(f'videos/{filename}')
     except FileNotFoundError:
         return json_response(status_=404)
 
 
-@app.route('/favicon.ico')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static', 'icon'),
-                               'favicon.ico', mimetype='image/png')
+@app.route('/convert', methods=['POST'])
+def convertVideo():
+    from OpenCV_Processing.VideoProcessing import VideoProcessing
+    data = request.json
+    color1 = [
+        data.get('color1').get('h')//2,
+        data.get('color1').get('s')*255 // 100,
+        data.get('color1').get('b')*255 // 100
+    ]
+    color2 = [
+        data.get('color2').get('h')//2,
+        data.get('color2').get('s')*255 // 100,
+        data.get('color2').get('b')*255 // 100
+    ]
+    try:
+        VideoProcessing(color1, color2, start, end)
+        return json_response(path = 'videos/temp/video1.mp4')
+    except Exception as error:
+        print('Processing error >>> ', error)
+        return json_response(status_=404,data_={'message': 'An error occured'})
+
+@app.route('/about', methods=['GET'])
+def about():
+    return render_template('blog.html')
 
 def downloadFromYoutube(url):
-    os.makedirs('videos/temp',exist_ok=True)
-    
+    os.makedirs('videos', exist_ok=True)
     yt = YouTube(url)
     title = yt.title
-    yt.streams.first().download(output_path='videos/temp' ,filename="video1")
-    return title, '/videos/temp/video1.mp4'
+    yt.streams.first().download(output_path='videos' ,filename="video1")
+    return title, 'videos/video1.mp4'
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(port=port)

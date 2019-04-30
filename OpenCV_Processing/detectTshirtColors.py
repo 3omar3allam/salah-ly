@@ -2,9 +2,7 @@ import cv2
 import numpy as np
 
 import matplotlib.pyplot as plt
-from AuxFunctions import removeBackGround
-from AuxFunctions import imgHistogram
-from AuxFunctions import maxRangeFromHisto
+from OpenCV_Processing.AuxFunctions import removeBackGround, imgHistogram, maxRangeFromHisto
 
 
 # we will detect the max color (background) then remove it

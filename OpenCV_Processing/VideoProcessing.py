@@ -3,13 +3,12 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-from ChangeTshirtColors import ChangeTshirtColors
-from detectTshirtColors import extractShirtsColors
-from AuxFunctions import calculateChangeColor
-from AuxFunctions import detectSuitableFrame
+from OpenCV_Processing.ChangeTshirtColors import ChangeTshirtColors
+from OpenCV_Processing.detectTshirtColors import extractShirtsColors
+from OpenCV_Processing.AuxFunctions import calculateChangeColor, detectSuitableFrame
 
-def VideoProcessing(Color1,Color2) :
-    video = cv2.VideoCapture('..//videos//temp//video1.mp4')
+def VideoProcessing(Color1,Color2, start, end) :
+    video = cv2.VideoCapture('videos/temp/video1.mp4')
     while(video.isOpened()):
         ret, frame = video.read()
         if(ret==True):
@@ -39,7 +38,6 @@ def VideoProcessing(Color1,Color2) :
         #cv2.imshow('frame',frame)
     video.release()
     cv2.destroyAllWindows()
-def main():
-    #VideoProcessing(0,7)
+
 if __name__ == "__main__":
     main()  

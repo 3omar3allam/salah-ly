@@ -17,6 +17,24 @@
         placeholder="Enter video URL..."
       />
     </div>
+    <div class="form-group d-flex justify-content-between">
+      <div class="mr-2">
+        <input
+          type="text"
+          class="form-control"
+          name="start"
+          placeholder="start time"
+        />
+      </div>
+      <div class="ml-2">
+        <input
+          type="text"
+          class="form-control"
+          name="end"
+          placeholder="end time"
+        />
+      </div>
+    </div>
     <div class="form-group d-flex justify-content-center">
       <button
         disabled
@@ -31,7 +49,7 @@
           role="status"
           aria-hidden="true"
         ></span>
-        <span id="upload-text">UPLOAD</span>
+        <span id="upload-text">DOWNLOAD</span>
       </button>
     </div>
     <div
@@ -41,31 +59,25 @@
     ></div>
     <figure
       style="display: none"
-      class="figure row mx-0 mt-5 justify-content-center"
-      id="video-container"
+      class="figure mx-0 mt-5 justify-content-center"
+      id="video1-container"
     >
       <figcaption
         id="originalVideoTitle"
         class="figure-caption w-100 text-left"
       ></figcaption>
       <div class="w-100"></div>
-      <iframe id="video-preview" class="figure-img img-fluid rounded w-100">
-      </iframe>
+      <video id="video1-preview" controls class="w-100"></video>
       <div class="w-100"></div>
       <figcaption class="figure-caption w-100 text-right">
-        Your original video
+        original video
       </figcaption>
     </figure>
   </form>
 </div>
 <!-- <div class="w-100"></div> -->
-<div class="row mb-5 pb-5">
-  <form
-    style="display: none"
-    class="col-12 col-sm-12 col-md-6 mx-auto"
-    method="POST"
-    id="color-choose"
-  >
+<div class="row pb-5" id="color-choose" style="display: none">
+  <form class="col-12 col-sm-12 col-md-6 mx-auto" method="POST" id="color-form">
     <h4 class="mx-auto my-3 text-center">
       Choose Team Colors
     </h4>
@@ -77,6 +89,7 @@
         id="picker1"
         readonly
         placeholder="Team #1"
+        value="#FF0000"
       />
       <input
         name="picker2"
@@ -85,40 +98,35 @@
         id="picker2"
         readonly
         placeholder="Team #2"
+        value="#FF0000"
       />
     </div>
-    <div class="form-group d-flex">
-      <button
-        disabled
-        id="color-submit"
-        class="btn btn-warning m-auto"
-        type="submit"
-      >
-        CONVERT
+    <div class="form-group d-flex justify-content-center">
+      <button id="color-submit" class="btn btn-secondary" type="submit">
+        <span
+          style="display: none"
+          class="spinner-border spinner-border-sm"
+          id="color-spinner"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span id="color-text">CONVERT</span>
       </button>
     </div>
+
+    <div
+      style="display: none"
+      class="form-group alert alert-danger text-center"
+      id="convert-error"
+    ></div>
   </form>
+  <div class="w-100"></div>
 </div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
-<div>ay kalam</div>
+<div id="video2-container" style="display: none">
+  <figure
+    class="figure mx-0 d-flex justify-content-center"
+  >
+    <video id="video2-preview" controls autoplay></video>
+  </figure>
+</div>
 {% endblock %}

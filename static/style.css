@@ -37,8 +37,25 @@ body {
 
 
 /** BEGIN MAIN **/
-#video-preview {
-  border: 0;
+#video1-preview {
+  height: 50%;
+  margin: 0;
+}
+
+#video2-preview {
+  margin: auto;
+  width: 95%;
+  height: 95%;
+}
+@media only screen and (min-width: 1000px){
+  #video2-preview {
+    width: 80%;
+    height: 80%;
+  }
+}
+
+#video2-container {
+  margin-bottom: 15vh;
 }
 
 .picker {
