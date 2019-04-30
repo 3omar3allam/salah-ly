@@ -17,10 +17,12 @@ def extractShirtsColors (img):
     # getting the max color range
     hist = imgHistogram(img, None, 1, 0)
     maxHist=np.argmax(hist)
-
-    # plt.plot(hist, color='r')
-    # plt.xlim([0, 180])
-    # plt.show()
+    print(hist[30][0])
+    sumi=0
+    for i in range(32,61):
+        sumi=sumi+hist[i][0]
+    file=open("temp.txt","a")
+    file.write(str(int(sumi/(61-32)))+"\n")
     hist = imgHistogram(img, None, 1, 1)
     # plt.plot(hist, color='r')
     # plt.xlim([0, 255])
@@ -84,7 +86,7 @@ def extractShirtsColors (img):
     # getting the max color range
     startIndex, endIndex = maxRangeFromHisto(maxIndex1)
 
-    lower_shirt_color = np.array([startIndex, 40, 5])
+    lower_shirt_color = np.array([startIndex, 20, 5])
     upper_shirt_color = np.array([endIndex, 255, 255])
     Red = False
     if lower_shirt_color[0] > upper_shirt_color[0]:
@@ -123,7 +125,7 @@ def extractShirtsColors (img):
     # getting the max color range
     startIndex, endIndex = maxRangeFromHisto(maxIndex2)
 
-    lower_shirt2_color = np.array([startIndex, 40, 5])
+    lower_shirt2_color = np.array([startIndex, 20, 5])
     upper_shirt2_color = np.array([endIndex, 255, 255])
 
     max1 = np.array([maxIndex1, maxIndex11, maxIndex12])
@@ -133,10 +135,10 @@ def extractShirtsColors (img):
 
 
 def main():
-    img = cv2.imread('Test_Cases//IPTest2.jpg')
-    l1, u1, l2, u2 = extractShirtsColors(img)
-    print(l1, u1, l2, u2)
-
+    img = cv2.imread('Test_Cases//yellow2.png')
+    l1, u1,max1 ,l2, u2,max2 = extractShirtsColors(img)
+    #print(l1, u1, l2, u2)
+    
 
 if __name__ == "__main__":
     main()

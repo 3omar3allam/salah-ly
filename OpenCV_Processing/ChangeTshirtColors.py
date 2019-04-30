@@ -39,8 +39,8 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
     else:
         mask1 = cv2.inRange(frame_HSV, lower_color_bounds1, upper_color_bounds1)
         mask_rgb1 = cv2.cvtColor(mask1, cv2.COLOR_GRAY2BGR)
-        cv2.imshow("s", mask_rgb1)
-        cv2.waitKey()
+        #cv2.imshow("s", mask_rgb1)
+        #cv2.waitKey()
     if Red2:
         mask2 = cv2.inRange(frame_HSV, np.array([0, 40, 2]), upper_color_bounds2)
         mask_rgb2 = cv2.cvtColor(mask2, cv2.COLOR_GRAY2BGR)
@@ -97,7 +97,7 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
 
 def main():
 
-    img = cv2.imread('Test_Cases//blue5.png')
+    img = cv2.imread('Test_Cases//red2.png')
     # lower range, upper range and max pixels for each team
     l1, u1, m1, l2, u2, m2 = extractShirtsColors(img)
 
@@ -110,7 +110,7 @@ def main():
     # (0:red) (1:orange) (2:yellow) (3:green) (4:dark green) (5:light blue) (6:blue)
     # (7:dark blue) (8:light violet) (9:dark violet) (-1:no change)
     color1 = calculateChangeColor(0, m1)
-    color2 = calculateChangeColor(-1, m2)
+    color2 = calculateChangeColor(7, m2)
 
     recoloredFrame = ChangeTshirtColors(img, l1, u1, color1, l2, u2, color2)
     cv2.namedWindow("recolored frame", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions

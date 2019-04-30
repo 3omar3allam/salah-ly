@@ -119,6 +119,13 @@ def calculateChangeColor(colorselector, originalColor):
         temp2 = 0
 
     return np.array([temp, temp1, temp2])
-
-    
+def detectSuitableFrame(img):
+    hist = imgHistogram(img, None, 1, 0)
+    sumi=0
+    for i in range(32,61):
+        sumi=sumi+hist[i][0]
+    average=sumi/(61-32)
+    if average>20000 and average<25000 :
+        return True
+    return False    
 
