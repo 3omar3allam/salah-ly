@@ -41,8 +41,7 @@ $(document).ready(function() {
       window.location.href = "/";
     }
   });
-
-  $("#video-upload input").keyup(function() {
+  $("#video-upload input").on('input',function() {
     $("#video-submit").prop("disabled", this.value == "" ? true : false);
   });
 
@@ -77,7 +76,7 @@ $(document).ready(function() {
           }
           uploadError(message);
         },
-        timeout: 30000
+        timeout: 300000000
       });
     } catch (e) {}
   });
