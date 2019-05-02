@@ -73,32 +73,10 @@ def maxRangeFromHisto (maxIndexH):
     return startIndex, endIndex
 
 
-def calculateChangeColor(colorselector, originalColor):
+def calculateChangeColor(newColor, originalColor):
     # this function is used to get the desired color to be added to original color, to get the new color chosen by user
-    if colorselector == 0:
-        color = np.array([0, 0, 0])  # red
-    elif colorselector == 1:
-        color = np.array([17, 0, 0])  # orange
-    elif colorselector == 2:
-        color = np.array([30, 0, 0])  # yellow
-    elif colorselector == 3:
-        color = np.array([50, 0, 0])  # green
-    elif colorselector == 4:
-        color = np.array([75, 0, 0])  # dark green
-    elif colorselector == 5:
-        color = np.array([95, 0, 0])  # light blue
-    elif colorselector == 6:
-        color = np.array([110, 0, 0])  # blue
-    elif colorselector == 7:
-        color = np.array([130, 0, 0])  # dark blue
-    elif colorselector == 8:
-        color = np.array([140, 0, 0])  # light violet
-    elif colorselector == 9:
-        color = np.array([165, 0, 0])  # dark violet
-    elif colorselector == -1:
-        return np.array([0, 0, 0])  # no change
 
-    #detecting if the color dark blue
+    # detecting if the color dark blue
     blue = False
     darkblue = False
     if 105 <= originalColor[0] <= 168:
@@ -108,7 +86,7 @@ def calculateChangeColor(colorselector, originalColor):
     if blue and originalColor[1] > 35:
         darkblue = True
 
-    temp = np.mod((color[0] - originalColor[0]), 180)
+    temp = np.mod((newColor[0] - originalColor[0]), 180)
 
     # if the color is dark blue, we have to change S and V of the transfer color
     if darkblue:
@@ -119,13 +97,17 @@ def calculateChangeColor(colorselector, originalColor):
         temp2 = 0
 
     return np.array([temp, temp1, temp2])
+
+
 def detectSuitableFrame(img):
+    # used to detect a frame in the video, which contains green background and players (wide shot frame)
+    # this frame is used for color detection
     hist = imgHistogram(img, None, 1, 0)
-    sumi=0
-    for i in range(32,61):
-        sumi=sumi+hist[i][0]
-    average=sumi/(61-32)
-    if average>20000 and average<25000 :
+    sumi = 0
+    for i in range(32, 61):
+        sumi = sumi + hist[i][0]
+    average = sumi/(61-32)
+    if average > 20000 and average < 25000:
         return True
     return False    
 

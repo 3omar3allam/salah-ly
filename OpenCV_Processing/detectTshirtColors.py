@@ -3,6 +3,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from OpenCV_Processing.AuxFunctions import removeBackGround, imgHistogram, maxRangeFromHisto
+# from AuxFunctions import removeBackGround, imgHistogram, maxRangeFromHisto
 
 
 # we will detect the max color (background) then remove it
@@ -15,7 +16,7 @@ def extractShirtsColors (img):
     # getting the max color range
     hist = imgHistogram(img, None, 1, 0)
     maxHist=np.argmax(hist)
-    print(hist[30][0])
+    # print(hist[30][0])
     sumi=0
     for i in range(32,61):
         sumi=sumi+hist[i][0]
