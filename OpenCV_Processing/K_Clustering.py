@@ -36,15 +36,16 @@ def plot_colors2(hist, centroids):
 def DominantColorsHistogram(img,noClusters):
     clusteringImg = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    # flattening the matrix for training
+    clusteringImg2 = cv2.cvtColor(clusteringImg, cv2.COLOR_BGR2HSV)
+
     clusteringImg = clusteringImg.reshape((clusteringImg.shape[0] * clusteringImg.shape[1], 3))
-    # Clustering
+
     clt = KMeans(n_clusters=noClusters)
     clt.fit(clusteringImg)
     print(clt)
 
     # Output Histogram
-    hist = find_histogram(clt)
+    hist = find_histogram(clt)s
     bar = plot_colors2(hist, clt.cluster_centers_)
 
     plt.axis("off")
