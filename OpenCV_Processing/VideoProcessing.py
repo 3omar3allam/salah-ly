@@ -30,7 +30,7 @@ def VideoProcessing(Color1, Color2, start, end):
 
     l1, u1, m1, l2, u2, m2 = extractShirtsColors(goodframe)
     frame_height, frame_width, _ = goodframe.shape
-    outvideo = cv2.VideoWriter('videos/video2.avi',cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), fps, (frame_width, frame_height))
+    outvideo = cv2.VideoWriter('videos/video2.mp4',cv2.VideoWriter_fourcc('M', 'P', 'E', 'G'), fps, (frame_width, frame_height))
     video1 = cv2.VideoCapture('videos/video1.mp4')
 
     # if the 2 detected ranges are the same, we will work on only one range
