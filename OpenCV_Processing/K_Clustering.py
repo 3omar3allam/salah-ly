@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans  # pip install scipy then pip install import sklearn.cluster
+
 
 
 
