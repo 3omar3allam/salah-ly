@@ -5,17 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans  # pip install scipy then pip install import sklearn.cluster
 
 
-def find_histogram(clt):
-    # creating array with cluster numbers
-    numLabels = np.arange(0, len(np.unique(clt.labels_)) + 1)
-    # Finding Histogram
-    (hist, _) = np.histogram(clt.labels_, bins=numLabels)
 
-    # Normalizing Histogram from 0 to 1
-    hist = hist.astype("float")
-    hist /= hist.sum()
-
-    return hist
 
 
 def plot_colors2(hist, centroids):
