@@ -16,8 +16,8 @@ FlaskJSON(app)
 # client = MongoClient(os.getenv('MONGO_CONN_STR'))
 # db = client['salah-ly']
 
-start = None
-end = None
+start = []
+end = []
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -27,12 +27,14 @@ def home():
         try:
             url = request.form.get('url')
             title, path = downloadFromYoutube(url)
-            start = request.form.get('start')
-            end = request.form.get('end')
-            if start:
-                start = int(start)
-            if end:
-                end = int(end)
+            st = request.form.get('start')
+            en = request.form.get('end')
+            if len(start)==0 and st!=None :
+                start.append(int(st))
+                print(start[0])
+            if len(end)==0 and en!=None :
+                end.append(int(en))
+                print(end[0])
             return json_response(path = path, title=title)
         except Exception as error:
             print('Upload error >>> ', error)
@@ -41,6 +43,7 @@ def home():
 @app.route('/videos/<string:filename>', methods=["GET"])
 def previewVideo(filename):
     try:
+        print(filename+"x")
         return send_file(f'videos/{filename}')
     except FileNotFoundError:
         return json_response(status_=404)
@@ -57,12 +60,17 @@ def convertVideo():
     ]
     color2 = [
         data.get('color2').get('h')//2,
-        data.get('color2').get('s')*255 // 100,
-        data.get('color2').get('b')*255 // 100
+        data.get('color2').get('s')*100 // 255,
+        data.get('color2').get('b')*100 // 255
     ]
-    try:
-        VideoProcessing(color1, color2, start, end)
-        return json_response(path = 'videos/temp/video1.mp4')
+
+    print(color1)
+    print(color2)
+    print(start[0])
+    print(end[0])
+    try :
+        VideoProcessing(color1, color2, start[0], end[0])
+        return json_response(path  =  '/videos/video2.avi')
     except Exception as error:
         print('Processing error >>> ', error)
         return json_response(status_=404,data_={'message': 'An error occured'})
