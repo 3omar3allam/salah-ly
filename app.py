@@ -29,12 +29,12 @@ def home():
             title, path = downloadFromYoutube(url)
             st = request.form.get('start')
             en = request.form.get('end')
-            if len(start)==0 and st!=None :
+            if st!=None :
                 start.append(int(st))
-                print(start[0])
-            if len(end)==0 and en!=None :
+                print(start[-1])
+            if en!=None :
                 end.append(int(en))
-                print(end[0])
+                print(end[-1])
             return json_response(path = path, title=title)
         except Exception as error:
             print('Upload error >>> ', error)
@@ -66,10 +66,10 @@ def convertVideo():
 
     print(color1)
     print(color2)
-    print(start[0])
-    print(end[0])
+    print(start[-1])
+    print(end[-1])
     try :
-        VideoProcessing(color1, color2, start[0], end[0])
+        VideoProcessing(color1, color2, start[-1], end[-1])
         return json_response(path  =  '/videos/video2.avi')
     except Exception as error:
         print('Processing error >>> ', error)
