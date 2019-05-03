@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 from OpenCV_Processing.ChangeTshirtColors import ChangeTshirtColors
 from OpenCV_Processing.detectTshirtColors import extractShirtsColors
 from OpenCV_Processing.AuxFunctions import calculateChangeColor, detectSuitableFrame
+# from ChangeTshirtColors import ChangeTshirtColors
+# from detectTshirtColors import extractShirtsColors
+# from AuxFunctions import calculateChangeColor, detectSuitableFrame
 
 
 def VideoProcessing(Color1, Color2, start, end):
@@ -13,12 +16,11 @@ def VideoProcessing(Color1, Color2, start, end):
     video = cv2.VideoCapture('videos/video1.mp4')
     noFrames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = video.get(cv2.CAP_PROP_FPS)
-    VideoTime=noFrames/fps
-    print (noFrames)
-    startFrame=noFrames*start/VideoTime
-    print (startFrame)
-    endFrame=noFrames*end/VideoTime
-    print(endFrame)
+    VideoTime = noFrames/fps
+    startFrame = noFrames*start/VideoTime
+    endFrame = noFrames*end/VideoTime
+
+    # using detectSuitableFrame to get good frame for color detection
     count=0
     while video.isOpened():
         ret, frame = video.read()
@@ -28,9 +30,12 @@ def VideoProcessing(Color1, Color2, start, end):
                     break
         #cv2.imshow('frame',frame)
 
+    # color detection
     l1, u1, m1, l2, u2, m2 = extractShirtsColors(goodframe)
     frame_height, frame_width, _ = goodframe.shape
-    outvideo = cv2.VideoWriter('videos/video2.avi',cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), fps, (frame_width, frame_height))
+
+    # creating output video
+    outvideo = cv2.VideoWriter('videos/video2.mp4', cv2.VideoWriter_fourcc('M', 'P', 'E', 'G'), fps, (frame_width, frame_height))
     video1 = cv2.VideoCapture('videos/video1.mp4')
 
     # if the 2 detected ranges are the same, we will work on only one range
@@ -38,22 +43,27 @@ def VideoProcessing(Color1, Color2, start, end):
         l2 = np.array([0, 0, 0])
         u2 = np.array([0, 0, 0])
 
-    # choosing the 2 new colors for the teams
+    # choosing the 2 new colors for the teams, and detecting the transfer color
     color1 = calculateChangeColor(Color1, m1)
     color2 = calculateChangeColor(Color2, m2)
-    count=0
+
+    count = 0
     while video1.isOpened():
-        count = count+1
+        count = count+1  # counter used to end the video after the chosen end seconds
         ret, frame = video1.read()
-        if ret  and count >startFrame :
+        if ret and count > startFrame:
             recoloredFrame = ChangeTshirtColors(frame, l1, u1, color1, l2, u2, color2)
             outvideo.write(recoloredFrame)
-        if  count >endFrame   :
+        if count > endFrame:
             break
         # cv2.imshow('frame',frame)
     video.release()
     cv2.destroyAllWindows()
+
+
 def main():
-    VideoProcessing([150,40,40], [80,40,40],10, 30)
+    VideoProcessing([0, 40, 40], [130, 40, 40], 10, 30)
+
+
 if __name__ == "__main__":
     main()
