@@ -11,15 +11,19 @@ from OpenCV_Processing.AuxFunctions import calculateChangeColor, detectSuitableF
 # from AuxFunctions import calculateChangeColor, detectSuitableFrame
 
 
-def VideoProcessing(Color1, Color2, start, end):
+def VideoProcessing(Color1, Color2, start, endi):
 
     video = cv2.VideoCapture('videos/video1.mp4')
     noFrames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = video.get(cv2.CAP_PROP_FPS)
     VideoTime = noFrames/fps
     startFrame = noFrames*start/VideoTime
+    if(endi==-1):
+        end=VideoTime
+    else :
+        end=endi    
     endFrame = noFrames*end/VideoTime
-
+    
     # using detectSuitableFrame to get good frame for color detection
     count=0
     while video.isOpened():
@@ -35,7 +39,8 @@ def VideoProcessing(Color1, Color2, start, end):
     frame_height, frame_width, _ = goodframe.shape
 
     # creating output video
-    outvideo = cv2.VideoWriter('videos/video2.mp4', cv2.VideoWriter_fourcc('M', 'P', 'E', 'G'), fps, (frame_width, frame_height))
+    f=0x7634706d
+    outvideo = cv2.VideoWriter('videos/video2.mp4', f, fps, (frame_width, frame_height))
     video1 = cv2.VideoCapture('videos/video1.mp4')
 
     # if the 2 detected ranges are the same, we will work on only one range
