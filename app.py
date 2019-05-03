@@ -49,10 +49,17 @@ def home():
 @app.route('/videos/<string:filename>', methods=["GET"])
 def previewVideo(filename):
     try:
-        print(filename+"x")
         return send_file(f'videos/{filename}')
     except FileNotFoundError:
         return json_response(status_=404)
+
+@app.route('/photos/<string:filename>', methods=["GET"])
+def previewPhoto(filename):
+    try:
+        return send_file(f'photos/{filename}')
+    except FileNotFoundError:
+        return json_response(status_=404)
+
 
 
 @app.route('/convert', methods=['POST'])
