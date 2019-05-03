@@ -55,8 +55,8 @@ def convertVideo():
     data = request.json
     color1 = [
         data.get('color1').get('h')//2,
-        data.get('color1').get('s')*255 // 100,
-        data.get('color1').get('b')*255 // 100
+        data.get('color1').get('s')*100 // 255,
+        data.get('color1').get('b')*100 // 255
     ]
     color2 = [
         data.get('color2').get('h')//2,
