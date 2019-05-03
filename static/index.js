@@ -200,7 +200,8 @@ $(document).ready(function() {
       } else if (isNaN(parseInt(end))) {
         throw Error("End must be a number!");
       }
-      if (start >= end) {
+
+      if ( start < 0 || (end != -1 && (end < 0 || start >= end)) ) {
         throw Error("Invalid time slices!");
       }
       $.ajax({
