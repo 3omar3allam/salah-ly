@@ -16,7 +16,7 @@
     <br/>
     <br/>
     <br/>
-    <img src="https://ichef.bbci.co.uk/news/624/cpsprodpb/3F11/production/_102454161_russia-saudi2prot.jpg" alt="Saudi Arabia vs Russia blindness case" height="400" width="600">
+    <img src="/photos/Saudi-vs-Russia-blind.JPG" alt="Saudi Arabia vs Russia blindness case" height="400" width="600">
     <br/>
     <br/>
     <br/>
@@ -26,7 +26,7 @@
     <br/>
     <br/>
     <br/>
-    <img src="https://ichef.bbci.co.uk/news/624/cpsprodpb/8D31/production/_102454163_russia-saudi.jpg" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+    <img src="/photos/Saudi-vs-Russia-Correct.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
     <br/>
     <br/>
     <br/>
@@ -61,16 +61,50 @@
         focus on the fans or coaches or zoomed in on a single player.<br/>
         We use this good frame to detect the t-shirts colors.<br/>
         Once the t-shirts colors are known, we use a mask to color players' t-shirts with the desired color.<br/>
+
         <b>Searching for a good frame: </b> <br/>
         We search video frames sequentially to find a frame with a histogram in which green pixels are dominant and with a percentage higher than
         a preset percentage.
         since green pixels are dominant, this means that this shot is not for fans or coaches or zoomed in frames or etc..<br/>
+
+        <img src="/photos/goodPhoto.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+        <br/>
+        <br/>
+
         <b>Detecting T-shirts colors:</b> <br/>
-        Once we find a good frame, We remove the background which represents the green court.<br/>
-        After omitting the background, only players are left (players of the two teams).<br/>
-        We re-calculate the histogram of that good frame after removing the background. Now, the dominant colors are the colors of the two teams
-        t-shirts.<br/>
+        Once we find a good frame, We remove the green court by finding pixels in green court range and subtracting them from original photo.<br/>
+        After omitting the green court, We bitwise and the output with the original photo then threshold the output.Then we detect players as objects whose height greater than width. After detecting players, we remove other objects. The result of the previous operations is bitwise anded with original photo to get players with their real colors.<br/>
+        We re-calculate the histogram of that photo which contains players only. Now, the dominant colors are the colors of the two teams t-shirts.<br/>
         Therefore, We now know the colors of the t-shirts, it's time to re-color them.<br/>
+        <br>
+        <figure>
+            <img src="/photos/subtractingCourt.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>Omitting Court</b></figcaption>
+        </figure>
+        <br/>
+        <br/>
+        <figure>
+            <img src="/photos/thersholhding.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>thresholding</b></figcaption>
+        </figure>
+        <br/>
+
+        <figure>
+            <img src="/photos/detectingPlayers.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>Detecting Players</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/andingWithOriginalPhoto.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>Bitwise anding with original photo</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/PlayersHistogram.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>Players Histogram</b></figcaption>
+        </figure>
+        <br/>
+
         <b>Change t-shirt colors:</b><br/>
         First, we get the pixels in the range of the detected t-shirt color. We threshold these pixels into black and white in order to get a mask of the t-shirts positions in the frame (Image segmentation with colors).<br/>
         We create a transformation matrix with a color that, when added to the original t-shit color, gives us the required color.<br/>
