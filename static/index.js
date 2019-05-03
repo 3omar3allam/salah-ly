@@ -191,13 +191,13 @@ $(document).ready(function() {
       var end = $("#color-form input[name=end]").val();
       if (!start) {
         start = 0;
-      } else if (isNaN(parseInt(start))) {
+      } else if (isNaN(parseFloat(start))) {
         throw Error("Start must be a number!");
       }
 
       if (!end) {
         end = -1;
-      } else if (isNaN(parseInt(end))) {
+      } else if (isNaN(parseFloat(end))) {
         throw Error("End must be a number!");
       }
 
