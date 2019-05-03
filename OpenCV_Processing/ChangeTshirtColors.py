@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from OpenCV_Processing.detectTshirtColors import extractShirtsColors
 from OpenCV_Processing.AuxFunctions import calculateChangeColor
+# from detectTshirtColors import extractShirtsColors
+# from AuxFunctions import calculateChangeColor
 
 
 def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferColor1, lower_color_bounds2, upper_color_bounds2, transferColor2) :
@@ -97,20 +99,18 @@ def ChangeTshirtColors (img, lower_color_bounds1, upper_color_bounds1, transferC
 
 def main():
 
-    img = cv2.imread('Test_Cases//red2.png')
+    img = cv2.imread('Test_Cases//redyellow2.png')
     # lower range, upper range and max pixels for each team
     l1, u1, m1, l2, u2, m2 = extractShirtsColors(img)
 
-    # if the 2 detected ranges are the same, we will work on only one channel
+    # if the 2 detected ranges are the same, we will work on only one range
     if l1[0] == l2[0] and u1[0] == u2[0]:
         l2 = np.array([0, 0, 0])
         u2 = np.array([0, 0, 0])
 
-    # choosing the 2 new colors for the teams, choose one of the colors and put its number in the 1st argument of the fn
-    # (0:red) (1:orange) (2:yellow) (3:green) (4:dark green) (5:light blue) (6:blue)
-    # (7:dark blue) (8:light violet) (9:dark violet) (-1:no change)
-    color1 = calculateChangeColor(0, m1)
-    color2 = calculateChangeColor(7, m2)
+    # choosing the 2 new colors for the teams
+    color1 = calculateChangeColor([65, 0, 0], m1)
+    color2 = calculateChangeColor([110, 0, 0], m2)
 
     recoloredFrame = ChangeTshirtColors(img, l1, u1, color1, l2, u2, color2)
     cv2.namedWindow("recolored frame", cv2.WINDOW_NORMAL)        # Create window with freedom of dimensions

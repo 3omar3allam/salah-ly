@@ -16,8 +16,8 @@ FlaskJSON(app)
 # client = MongoClient(os.getenv('MONGO_CONN_STR'))
 # db = client['salah-ly']
 
-start = None
-end = None
+start = []
+end = []
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -27,12 +27,20 @@ def home():
         try:
             url = request.form.get('url')
             title, path = downloadFromYoutube(url)
-            start = request.form.get('start')
-            end = request.form.get('end')
-            if start:
-                start = int(start)
-            if end:
-                end = int(end)
+            st = request.form.get('start')
+            en = request.form.get('end')
+            if st=="":
+                start.append(0)  
+                print(start[-1])
+            elif st!=None :
+                start.append(int(st))
+                print(start[-1])
+            if en=="":
+                end.append(-1)
+                print(end[-1])
+            elif en!=None :
+                end.append(int(en))
+                print(end[-1])
             return json_response(path = path, title=title)
         except Exception as error:
             print('Upload error >>> ', error)
@@ -45,6 +53,14 @@ def previewVideo(filename):
     except FileNotFoundError:
         return json_response(status_=404)
 
+@app.route('/photos/<string:filename>', methods=["GET"])
+def previewPhoto(filename):
+    try:
+        return send_file(f'photos/{filename}')
+    except FileNotFoundError:
+        return json_response(status_=404)
+
+
 
 @app.route('/convert', methods=['POST'])
 def convertVideo():
@@ -52,17 +68,22 @@ def convertVideo():
     data = request.json
     color1 = [
         data.get('color1').get('h')//2,
-        data.get('color1').get('s')*255 // 100,
-        data.get('color1').get('b')*255 // 100
+        data.get('color1').get('s')*100 // 255,
+        data.get('color1').get('b')*100 // 255
     ]
     color2 = [
         data.get('color2').get('h')//2,
-        data.get('color2').get('s')*255 // 100,
-        data.get('color2').get('b')*255 // 100
+        data.get('color2').get('s')*100 // 255,
+        data.get('color2').get('b')*100 // 255
     ]
-    try:
-        VideoProcessing(color1, color2, start, end)
-        return json_response(path = 'videos/temp/video1.mp4')
+
+    print(color1)
+    print(color2)
+    print(start[-1])
+    print(end[-1])
+    try :
+        VideoProcessing(color1, color2, start[-1], end[-1])
+        return json_response(path  =  '/videos/video2.mp4')
     except Exception as error:
         print('Processing error >>> ', error)
         return json_response(status_=404,data_={'message': 'An error occured'})

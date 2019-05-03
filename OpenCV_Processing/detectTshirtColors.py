@@ -3,6 +3,7 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 from OpenCV_Processing.AuxFunctions import removeBackGround, imgHistogram, maxRangeFromHisto
+# from AuxFunctions import removeBackGround, imgHistogram, maxRangeFromHisto
 
 
 # we will detect the max color (background) then remove it
@@ -15,20 +16,13 @@ def extractShirtsColors (img):
     # getting the max color range
     hist = imgHistogram(img, None, 1, 0)
     maxHist=np.argmax(hist)
-    print(hist[30][0])
+
+    # print(hist[30][0])
     sumi=0
     for i in range(32,61):
         sumi=sumi+hist[i][0]
     file=open("temp.txt","a")
     file.write(str(int(sumi/(61-32)))+"\n")
-    hist = imgHistogram(img, None, 1, 1)
-    # plt.plot(hist, color='r')
-    # plt.xlim([0, 255])
-    # plt.show()
-    hist = imgHistogram(img, None, 1, 2)
-    # plt.plot(hist, color='r')
-    # plt.xlim([0, 255])
-    # plt.show()
 
     startIndex, endIndex = maxRangeFromHisto(maxHist)  # getting the range of the playground color
 
@@ -64,9 +58,6 @@ def extractShirtsColors (img):
     # cv2.waitKey()
     hist = imgHistogram(img, playersPixels, 0, 0)
 
-    # plt.plot(hist, color='r')
-    # plt.xlim([0, 180])
-    # plt.show()
 
     maxIndex1 = np.argmax(hist)
 
@@ -99,8 +90,6 @@ def extractShirtsColors (img):
 
     playersSameTeam = removeBackGround(playersSameTeam, lower_pitch_color, upper_pitch_color)
 
-    # cv2.imshow("playerssameteam",playersSameTeam)
-    # cv2.waitKey()
 
     # second team only players histogram
     hist = imgHistogram(img, playersSameTeam, 0, 0)
@@ -128,6 +117,14 @@ def extractShirtsColors (img):
 
     max1 = np.array([maxIndex1, maxIndex11, maxIndex12])
     max2 = np.array([maxIndex2, maxIndex21, maxIndex22])
+
+    # Preventing false detection of pitch color as tshirt color
+    if lower_shirt_color[0]==lower_pitch_color[0] and upper_shirt_color[0]==upper_pitch_color[0]:
+        lower_shirt_color = np.array([0, 0, 0])
+        upper_shirt_color = np.array([0, 0, 0])
+    if lower_shirt2_color[0]==lower_pitch_color[0] and upper_shirt2_color[0]==upper_pitch_color[0]:
+        lower_shirt2_color = np.array([0, 0, 0])
+        upper_shirt2_color = np.array([0, 0, 0])
 
     return lower_shirt_color, upper_shirt_color, max1, lower_shirt2_color, upper_shirt2_color, max2
 
