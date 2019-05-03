@@ -1,17 +1,22 @@
-color1 = {
-  h: 0, s: 100, b: 100
-}, color2 = {
-  h: 240, s: 100, b:100
-};
+(color1 = {
+  h: 0,
+  s: 100,
+  b: 100
+}),
+  (color2 = {
+    h: 240,
+    s: 100,
+    b: 100
+  });
 
 function toggleUploadButton(uploading) {
   if (uploading) {
-    $("#upload-text").text("DOWNLOADING");
+    $("#upload-text").text("FETCHING");
     if ($("#upload-spinner").is(":hidden")) {
       $("#upload-spinner").show();
     }
   } else {
-    $("#upload-text").text("UPLOAD");
+    $("#upload-text").text("FETCH");
     if ($("#upload-spinner").is(":visible")) {
       $("#upload-spinner").hide();
     }
@@ -19,7 +24,10 @@ function toggleUploadButton(uploading) {
 }
 
 function uploadSuccess(response) {
+  sessionStorage.setItem('videoTitle', response.title);
+  sessionStorage.setItem('videoPath', response.path);
   resetColors();
+  $("#result-download").hide();
   toggleUploadButton(false);
   $("#form-response").remove();
   $("#video1-container").show();
@@ -54,11 +62,13 @@ function toggleConvertButton(converting) {
 function convertSuccess(response) {
   resetColors();
   toggleConvertButton(false);
-  $("#video2-container").show();
-  $("#video2-preview").attr("src", response.path);
-  $("html, body").animate({
-    scrollTop: $("#video2-container").offset().top - 60
-  });
+  $("#result-download").show();
+  $("#result-download").attr("href", response.path);
+  // $("#video2-container").show();
+  // $("#video2-preview").attr("src", response.path);
+  // $("html, body").animate({
+  //   scrollTop: $("#video2-container").offset().top - 60
+  // });
 }
 
 function convertError(message) {
@@ -66,21 +76,26 @@ function convertError(message) {
   $("#convert-error").show();
   $("#convert-error").html(message);
   toggleConvertButton(false);
+  $("#result-download").hide();
 }
 
 function resetColors() {
-  color1 = {
-    h: 0, s: 100, b: 100
-  }, color2 = {
-    h: 240, s: 100, b:100
-  };
+  (color1 = {
+    h: 0,
+    s: 100,
+    b: 100
+  }),
+    (color2 = {
+      h: 240,
+      s: 100,
+      b: 100
+    });
 }
 
 $(document).ready(function() {
   resetColors();
-
   $(".navbar-brand").click(function() {
-    if (window.location.pathname === '/') {
+    if (window.location.pathname === "/") {
       $("html, body").animate({
         scrollTop: 0
       });
@@ -88,7 +103,7 @@ $(document).ready(function() {
       window.location.href = "/";
     }
   });
-  $("#video-upload input").on('input',function() {
+  $("#video-upload input").on("input", function() {
     $("#video-submit").prop("disabled", this.value == "" ? true : false);
   });
 
@@ -103,37 +118,40 @@ $(document).ready(function() {
       $("#video1-container").hide();
     }
     var formData = $("#video-upload").serialize();
-    try {
-      start = $('#video-upload input[name=start]').val();
-      end = $('#video-upload input[name=end]').val()
-      if (start && isNaN(parseInt(start)) || end && isNaN(parseInt(end))) {
-        throw Error('Time slices must be a number!');
-      } else if (parseInt(start) >= parseInt(end)) {
-        throw Error('Invalid time slices!')
+    const url = $("#video-upload input[name=url]").val();
+    if (url === sessionStorage.getItem("videoUrl") && sessionStorage.getItem('videoPath')) {
+      const fakeResponse = {
+        path: sessionStorage.getItem('videoPath'),
+        title: sessionStorage.getItem("videoTitle")
+      };
+      uploadSuccess(fakeResponse);
+    } else {
+      try {
+        $.ajax({
+          url: "/",
+          method: "post",
+          data: formData,
+          processData: false,
+          success: response => {
+            sessionStorage.setItem('videoUrl', url);
+            uploadSuccess(response);
+          },
+          error: error => {
+            let message;
+            if (error.statusText === "timeout") {
+              message = "Timeout! Request took too long";
+            } else if (error.responseJSON) {
+              message = error.responseJSON.message;
+            } else {
+              message = "Unknown error occured!";
+            }
+            uploadError(message);
+          },
+          timeout: 300000000
+        });
+      } catch (e) {
+        uploadError(e.message);
       }
-      $.ajax({
-        url: "/",
-        method: "post",
-        data: formData,
-        processData: false,
-        success: response => {
-          uploadSuccess(response);
-        },
-        error: error => {
-          let message;
-          if (error.statusText === "timeout") {
-            message = "Timeout! Request took too long";
-          } else if (error.responseJSON) {
-            message = error.responseJSON.message;
-          } else {
-            message = "Unknown error occured!";
-          }
-          uploadError(message);
-        },
-        timeout: 300000000
-      });
-    } catch (e) {
-      uploadError(e.message);
     }
   });
 
@@ -142,18 +160,20 @@ $(document).ready(function() {
     flat: false,
     enableAlpha: false,
     onChange: function(ev) {
-      if (ev.el.id === 'picker1') {
+      if (ev.el.id === "picker1") {
         color1 = ev.hsb;
-      } else if (ev.el.id === 'picker2') {
+      } else if (ev.el.id === "picker2") {
         color2 = ev.hsb;
       }
       $(ev.el).css("border-color", "#" + ev.hex);
-      $(ev.el).val("#" + ev.hex).trigger('change');
+      $(ev.el)
+        .val("#" + ev.hex)
+        .trigger("change");
       $(ev.el).setColor("#" + ev.hex, false);
     },
     onSubmit: function(ev) {
       $(ev.el).hides();
-    },
+    }
   });
 
   $("#color-form").on("submit", e => {
@@ -167,6 +187,19 @@ $(document).ready(function() {
       $("#video2-container").hide();
     }
     try {
+      var start = $("#color-form input[name=start]").val();
+      var end = $("#color-form input[name=end]").val();
+      if (!start) {
+        start = 0;
+      } else if (isNaN(parseInt(start))) {
+        throw Error("Start must be a number!");
+      }
+
+      if (!end) {
+        end = -1;
+      } else if (isNaN(parseInt(end))) {
+        throw Error("End must be a number!");
+      }
       $.ajax({
         url: "/convert",
         method: "post",
@@ -174,7 +207,9 @@ $(document).ready(function() {
         dataType: "json",
         data: JSON.stringify({
           color1: color1,
-          color2: color2
+          color2: color2,
+          start: start,
+          end: end
         }),
         success: response => {
           convertSuccess(response);
@@ -189,8 +224,10 @@ $(document).ready(function() {
             message = "Unknown error occured!";
           }
           convertError(message);
-        },
+        }
       });
-    } catch (e) {}
+    } catch (e) {
+      convertError(e.message);
+    }
   });
 });

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, jsonify, send_file, send_from_directory
+from flask import Flask, render_template, request, send_file
 from flask_json import FlaskJSON, json_response
 # from pymongo import MongoClient
 
@@ -6,8 +6,8 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 import os
 import json
+import time
 
-import cv2
 from packages.pytube import YouTube
 
 app = Flask(__name__)
@@ -16,8 +16,13 @@ FlaskJSON(app)
 # client = MongoClient(os.getenv('MONGO_CONN_STR'))
 # db = client['salah-ly']
 
-start = []
-end = []
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, public, max-age=0"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
+
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -27,63 +32,31 @@ def home():
         try:
             url = request.form.get('url')
             title, path = downloadFromYoutube(url)
-            st = request.form.get('start')
-            en = request.form.get('end')
-            if st=="":
-                start.append(0)  
-                print(start[-1])
-            elif st!=None :
-                start.append(int(st))
-                print(start[-1])
-            if en=="":
-                end.append(-1)
-                print(end[-1])
-            elif en!=None :
-                end.append(int(en))
-                print(end[-1])
             return json_response(path = path, title=title)
         except Exception as error:
-            print('Upload error >>> ', error)
+            print('Download error >>> ', error)
             return json_response(status_=404,data_={'message': 'Failed to get video'})
-
-@app.route('/videos/<string:filename>', methods=["GET"])
-def previewVideo(filename):
-    try:
-        return send_file(f'videos/{filename}')
-    except FileNotFoundError:
-        return json_response(status_=404)
-
-@app.route('/photos/<string:filename>', methods=["GET"])
-def previewPhoto(filename):
-    try:
-        return send_file(f'photos/{filename}')
-    except FileNotFoundError:
-        return json_response(status_=404)
-
-
 
 @app.route('/convert', methods=['POST'])
 def convertVideo():
-    from OpenCV_Processing.VideoProcessing import VideoProcessing
-    data = request.json
-    color1 = [
-        data.get('color1').get('h')//2,
-        data.get('color1').get('s')*100 // 255,
-        data.get('color1').get('b')*100 // 255
-    ]
-    color2 = [
-        data.get('color2').get('h')//2,
-        data.get('color2').get('s')*100 // 255,
-        data.get('color2').get('b')*100 // 255
-    ]
-
-    print(color1)
-    print(color2)
-    print(start[-1])
-    print(end[-1])
     try :
-        VideoProcessing(color1, color2, start[-1], end[-1])
-        return json_response(path  =  '/videos/video2.mp4')
+        from OpenCV_Processing.VideoProcessing import VideoProcessing
+        data = request.json
+        color1 = [
+            data.get('color1').get('h')//2,
+            data.get('color1').get('s')*100 // 255,
+            data.get('color1').get('b')*100 // 255
+        ]
+        color2 = [
+            data.get('color2').get('h')//2,
+            data.get('color2').get('s')*100 // 255,
+            data.get('color2').get('b')*100 // 255
+        ]
+        start = float(data.get('start'))
+        end = float(data.get('end'))
+        os.makedirs('videos', exist_ok=True)
+        path = VideoProcessing(color1, color2, start, end)
+        return json_response(path = path)
     except Exception as error:
         print('Processing error >>> ', error)
         return json_response(status_=404,data_={'message': 'An error occured'})
@@ -91,6 +64,22 @@ def convertVideo():
 @app.route('/about', methods=['GET'])
 def about():
     return render_template('blog.html')
+
+@app.route('/videos/<string:filename>', methods=["GET"])
+def previewVideo(filename):
+    try:
+        f = open(f'videos/{filename}')
+        return send_file(f'videos/{filename}')
+    except FileNotFoundError:
+        return json_response(status_=404)
+
+@app.route('/photos/<string:filename>', methods=["GET"])
+def previewPhoto(filename):
+    try:
+        f = open(f'photos/{filename}')
+        return send_file(f'photos/{filename}', cache_timeout=-1)
+    except FileNotFoundError:
+        return json_response(status_=404)
 
 def downloadFromYoutube(url):
     os.makedirs('videos', exist_ok=True)

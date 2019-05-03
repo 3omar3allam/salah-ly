@@ -2,9 +2,10 @@
 __pycache__
 videos
 *.pyc
+temp.txt
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
 .c9/
@@ -13,7 +14,7 @@ videos
 *.sublime-workspace
 
 # IDE - VSCode
-/.vscode
+.vscode
 .vscode/*
 
 

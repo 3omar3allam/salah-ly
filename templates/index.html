@@ -17,24 +17,6 @@
         placeholder="Enter video URL..."
       />
     </div>
-    <div class="form-group d-flex justify-content-between">
-      <div class="mr-2">
-        <input
-          type="text"
-          class="form-control"
-          name="start"
-          placeholder="start time"
-        />
-      </div>
-      <div class="ml-2">
-        <input
-          type="text"
-          class="form-control"
-          name="end"
-          placeholder="end time"
-        />
-      </div>
-    </div>
     <div class="form-group d-flex justify-content-center">
       <button
         disabled
@@ -49,7 +31,7 @@
           role="status"
           aria-hidden="true"
         ></span>
-        <span id="upload-text">DOWNLOAD</span>
+        <span id="upload-text">FETCH</span>
       </button>
     </div>
     <div
@@ -101,8 +83,22 @@
         value="#FF0000"
       />
     </div>
-    <div class="form-group d-flex justify-content-center">
-      <button id="color-submit" class="btn btn-secondary" type="submit">
+    <div class="form-group d-flex justify-content-between">
+      <input
+        type="text"
+        class="form-control mr-3"
+        name="start"
+        placeholder="start time"
+      />
+      <input
+        type="text"
+        class="form-control ml-3"
+        name="end"
+        placeholder="end time"
+      />
+    </div>
+    <div class="form-group d-flex justify-content-between">
+      <button id="color-submit" class="btn btn-warning mx-auto" type="submit">
         <span
           style="display: none"
           class="spinner-border spinner-border-sm"
@@ -112,6 +108,13 @@
         ></span>
         <span id="color-text">CONVERT</span>
       </button>
+      <a
+        id="result-download"
+        style="display: none"
+        class="btn btn-secondary mx-auto"
+      >
+        Download Result Video
+      </a>
     </div>
 
     <div
@@ -122,11 +125,12 @@
   </form>
   <div class="w-100"></div>
 </div>
-<div id="video2-container" style="display: none">
+<!-- <div id="video2-container" style="display: none">
   <figure
     class="figure mx-0 d-flex justify-content-center"
   >
     <video id="video2-preview" controls autoplay></video>
   </figure>
-</div>
+</div> -->
+
 {% endblock %}

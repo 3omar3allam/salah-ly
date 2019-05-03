@@ -39,8 +39,8 @@ def VideoProcessing(Color1, Color2, start, endi):
     frame_height, frame_width, _ = goodframe.shape
 
     # creating output video
-    f=0x7634706d
-    outvideo = cv2.VideoWriter('videos/video2.mp4', f, fps, (frame_width, frame_height))
+    fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    outvideo = cv2.VideoWriter('videos/salahly.avi', fourcc, fps, (frame_width, frame_height))
     video1 = cv2.VideoCapture('videos/video1.mp4')
 
     # if the 2 detected ranges are the same, we will work on only one range
@@ -64,7 +64,7 @@ def VideoProcessing(Color1, Color2, start, endi):
         # cv2.imshow('frame',frame)
     video.release()
     cv2.destroyAllWindows()
-
+    return 'videos/salahly.avi'
 
 def main():
     VideoProcessing([0, 40, 40], [130, 40, 40], 10, 30)
