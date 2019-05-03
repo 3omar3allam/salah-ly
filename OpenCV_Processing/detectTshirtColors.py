@@ -21,8 +21,6 @@ def extractShirtsColors (img):
     sumi=0
     for i in range(32,61):
         sumi=sumi+hist[i][0]
-    file=open("temp.txt","a")
-    file.write(str(int(sumi/(61-32)))+"\n")
 
     startIndex, endIndex = maxRangeFromHisto(maxHist)  # getting the range of the playground color
 

@@ -26,6 +26,9 @@ function toggleUploadButton(uploading) {
 function uploadSuccess(response) {
   sessionStorage.setItem('videoTitle', response.title);
   sessionStorage.setItem('videoPath', response.path);
+  if (response.length) {
+    sessionStorage.setItem('videoLength', response.length);
+  }
   resetColors();
   $("#result-download").hide();
   toggleUploadButton(false);
@@ -43,6 +46,7 @@ function uploadError(message) {
   $("#upload-error").show();
   $("#upload-error").html(message);
   toggleUploadButton(false);
+  sessionStorage.clear();
 }
 
 function toggleConvertButton(converting) {
@@ -122,10 +126,12 @@ $(document).ready(function() {
     if (url === sessionStorage.getItem("videoUrl") && sessionStorage.getItem('videoPath')) {
       const fakeResponse = {
         path: sessionStorage.getItem('videoPath'),
-        title: sessionStorage.getItem("videoTitle")
+        title: sessionStorage.getItem("videoTitle"),
+        length: sessionStorage.getItem('videoLength'),
       };
       uploadSuccess(fakeResponse);
     } else {
+      sessionStorage.clear();
       try {
         $.ajax({
           url: "/",
@@ -204,6 +210,10 @@ $(document).ready(function() {
       if ( start < 0 || (end != -1 && (end < 0 || start >= end)) ) {
         throw Error("Invalid time slices!");
       }
+      if ( sessionStorage.getItem('videoLength') && end > parseInt(sessionStorage.getItem('videoLength')) ) {
+        throw Error("End cannot exceed video length!");
+      }
+
       $.ajax({
         url: "/convert",
         method: "post",

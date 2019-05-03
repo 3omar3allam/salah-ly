@@ -31,8 +31,8 @@ def home():
     else:
         try:
             url = request.form.get('url')
-            title, path = downloadFromYoutube(url)
-            return json_response(path = path, title=title)
+            title, path, length = downloadFromYoutube(url)
+            return json_response(path = path, title=title, length = length)
         except Exception as error:
             print('Download error >>> ', error)
             return json_response(status_=404,data_={'message': 'Failed to get video'})
@@ -86,7 +86,7 @@ def downloadFromYoutube(url):
     yt = YouTube(url)
     title = yt.title
     yt.streams.first().download(output_path='videos' ,filename="video1")
-    return title, 'videos/video1.mp4'
+    return title, 'videos/video1.mp4', yt.length
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
