@@ -111,8 +111,42 @@
         We use bitwise anding between this transformation matrix and the pre-made mask. Therefore, this transformation matrix is only applied to players t-shirts.<br/>
         Now, it's time to add this transformation matrix to the original photo. (Original photo + Masked transformation matrix)<br/>
     </font>
+    <br/>
+        <figure>
+            <img src="/photos/trans.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>creating Transformation matrix</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/inrange.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>Get pixels in range of the detected color only</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/andingwithMask.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>anding with original photo</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/thresh+morph.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>thresholding last photo and performing morphological operations</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/andingwithTrans.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>anding last photo with Transformation matrix</b></figcaption>
+        </figure>
+        <br/>
+        <figure>
+            <img src="/photos/finalResult.JPG" alt="Saudi Arabia vs Russia correct case" height="400" width="600">
+            <figcaption><b>Adding last photo with the original photo to get final result</b></figcaption>
+        </figure>
+        <br/>
+
 </p>
-<br/>
+
+
+
 <br/>
 <br/>
 {% endblock %}
