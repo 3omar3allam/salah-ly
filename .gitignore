@@ -1,6 +1,7 @@
 /venv
 __pycache__
 videos
+*.pyc
 
 # IDEs and editors
 /.idea
