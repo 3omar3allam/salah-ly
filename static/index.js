@@ -200,6 +200,9 @@ $(document).ready(function() {
       } else if (isNaN(parseInt(end))) {
         throw Error("End must be a number!");
       }
+      if (start >= end) {
+        throw Error("Invalid time slices!");
+      }
       $.ajax({
         url: "/convert",
         method: "post",
