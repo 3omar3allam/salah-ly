@@ -207,9 +207,12 @@ $(document).ready(function() {
         throw Error("End must be a number!");
       }
 
-      if ( start < 0 || (end != -1 && (end < 0 || start >= end)) ) {
+    /*  if ( (start < 0) || ((end != (-1)) && ((end < 0) || (start >= end)) )) {
+      	console.log("s")
+      	console.log(start)
+      	console.log(end)
         throw Error("Invalid time slices!");
-      }
+      }*/
       if ( sessionStorage.getItem('videoLength') && end > parseInt(sessionStorage.getItem('videoLength')) ) {
         throw Error("End cannot exceed video length!");
       }
