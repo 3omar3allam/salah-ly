@@ -1,3 +1,6 @@
+# SalahLY
+* Live version running on [salah-ly.herokuapp.com](https://salah-ly.herokuapp.com)
+
 ## Startup
 
 1. Create virtual environment: (first time only)
@@ -19,12 +22,6 @@
     ```
     pip install -r requirements.txt
     ```
-
-## Running development server
-
-```
-flask run
-```
 
 ## Note
 Before every commit run: `pip freeze > requirements.txt` to save your new packages
