@@ -1,5 +1,6 @@
 # SalahLY
 * Live version running on [salah-ly.herokuapp.com](https://salah-ly.herokuapp.com)
+    > sometimes the live version responds with **request timeout** because we are using a free tier host.
 
 ## Startup
 
